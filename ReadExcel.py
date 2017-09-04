@@ -1,16 +1,14 @@
-from openpyxl import Workbook
-wb = Workbook()
-ws = wb.active
-ws.title = 'Datos'
+from openpyxl import load_workbook
+wb = load_workbook(filename = 'libro.xlsx', read_only=True)
 
-ws['A1'] = 'ID'
-ws['B1'] = 'Nombre'
-ws['C1'] = 'Apellido'
+print wb.sheetnames
 
-for i in range(2,5):
-  for j in range(2,5):
-    ws['A' + str(i)] = i
-    ws['B' + str(i)] = 'Camilo'
-    ws['C' + str(i)] = 'Arguello'
-    
-wb.save('libro.xlsx')
+for sheet in wb.sheetnames:
+  ws = wb[sheet]
+  print ws['A1'].value
+  
+# ws = wb['Datos']
+
+# for row in ws.rows:
+#   for cell in row:
+#     print cell.value

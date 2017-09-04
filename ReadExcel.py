@@ -1,14 +1,10 @@
 from openpyxl import load_workbook
-wb = load_workbook(filename = 'libro.xlsx', read_only=True)
+wb = load_workbook(filename = 'xlsx/BMW_Sales_Standards_2016_ME.xlsx', data_only=True)
 
-print wb.sheetnames
+ws = wb['Section 1_Brand Architecture']
 
-for sheet in wb.sheetnames:
-  ws = wb[sheet]
-  print ws['A1'].value
-  
-# ws = wb['Datos']
+cell_range = ws['Z6':'Z18']
 
-# for row in ws.rows:
-#   for cell in row:
-#     print cell.value
+for i, rowOfCellObjects in enumerate(cell_range):
+  for n, cellObj in enumerate(rowOfCellObjects):
+    print cellObj.value

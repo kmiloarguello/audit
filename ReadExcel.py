@@ -1,4 +1,5 @@
 from openpyxl import load_workbook
+from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
 wb = load_workbook(filename = 'xlsx/BMW_Sales_Standards_2016_ME.xlsx', data_only=True)
@@ -21,4 +22,10 @@ for sheet in sheets: #In current sheet give me the rows and columns
         n_result = index_number_categories.index("N") #Find all data with value N in that column
         rowData.insert(0,column[n_result].value)  #Get the category number and insert the value of row #1 in excel => B
         if(len(rowData) == 32): #Get the last item of iterator array
-          print rowData #Print final data filtered
+          # print rowData[14] #Print final data filtered
+          wbp = Workbook(write_only=True)
+          wsp = wbp.create_sheet()
+          for i in range(len(rowData)):
+            wsp.append([rowData[i]])
+          wbp.save('result.xlsx')
+

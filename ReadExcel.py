@@ -23,9 +23,9 @@ for sheet in sheets: #In current sheet give me the rows and columns
         rowData.insert(0,column[n_result].value)  #Get the category number and insert the value of row #1 in excel => B
         if(len(rowData) == 32): #Get the last item of iterator array
           # print rowData[14] #Print final data filtered
-          wbp = Workbook(write_only=True)
-          wsp = wbp.create_sheet()
-          for i in range(len(rowData)):
-            wsp.append([rowData[i]])
-          wbp.save('result.xlsx')
+          wbp = Workbook(write_only=True) #Call again Workbook with parameter of writing new file
+          wsp = wbp.create_sheet() #Create sheet
+          for i in range(len(rowData)): # In rowData get all the data
+            wsp.append([rowData[i]]) # append it into a cells
+          wbp.save('result.xlsx') # Save excel file
 

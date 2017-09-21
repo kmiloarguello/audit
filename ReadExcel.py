@@ -3,7 +3,7 @@ from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
 wb = load_workbook(filename = 'xlsx/BMW_Sales_Standards_2016_ME.xlsx', data_only=True)
-sheets = wb.sheetnames[10:12] #Current Sheet
+sheets = wb.sheetnames[3:12] #Current Sheet
 
 # Arrays
 numberCategory = []
@@ -20,6 +20,7 @@ for sheet in sheets: #In current sheet give me the rows and columns
     index_number_categories.extend([number_categories_without_filter]) # Store data row into a Array to see its index
 
     if(row[23].value == "N"): #If X1 to Xn something has N get that result
+      print (row[23],row[23].value)
       n_result = [] # Empty array to add values with N
       
       for i in range(len(index_number_categories)): # Go through the array
@@ -28,9 +29,8 @@ for sheet in sheets: #In current sheet give me the rows and columns
           n_result.append(i) # add this index to n_result the N values
 
       negatives = max(n_result) #save the max result of array i.e. of a len of 3 items should be => [a,b,c] instead => [a] or => [a,b]
-    
-      for column in ws.columns: #Get info of current row that has N in that column
-        print column[0]
+
+      # for column in ws.columns: #Get info of current row that has N in that column
         # rowData.append([column[negatives]])  #Get the category number and insert the value of row #1 in excel => B
 
   #       wbp = Workbook(write_only=True) #Call again Workbook with parameter of writing new file

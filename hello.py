@@ -1,6 +1,13 @@
+# Tkinter lib to create user interface
 import sys
 from Tkinter import *
 from tkFileDialog import askopenfilename
+
+# Openpyxl libs
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.writer.write_only import WriteOnlyCell
+
 
 class App(Frame):
   def __init__(self, master=None):
@@ -15,21 +22,22 @@ class App(Frame):
     self.QUIT['command'] = self.quit
     self.QUIT.pack(side=LEFT, padx=10,pady=10)
   
+
 window = Tk()
 window.title('K@PTA Excel Auditorias')
 window.wm_iconbitmap('img/kapta_mex.ico')
 window.geometry('{}x{}'.format(800, 600))
 window.resizable(0,0)
 
-window.fileName = filedialog.askopenfilename( filetypes = (("howCode files", ".hc"), ("All files", "*.*")))
+window.filename = askopenfilename( filetypes = (("Archivos de Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))
 
+print window.filename
 
-# window.configure(background="#ffffff")
+wb = load_workbook(filename = window.filename, data_only=True)
+sheets = wb.sheetnames[3:4] #Current Sheet
 
-# bg = PhotoImage(file="img/bg.gif")
-# img = Label(window, image=bg)
-# img.place(x=0,y=0, relwidth=1,relheight=1)
-# img.pack()
+for sheet in sheets:
+  print sheet
 
 app = App(master=window)
 

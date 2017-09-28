@@ -2,31 +2,19 @@
 import sys
 from Tkinter import *
 from tkFileDialog import askopenfilename
+from tkintertable import TableCanvas, TableModel
 
 # Openpyxl libs
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
-class App(Frame):
-  def __init__(self, master=None):
-    Frame.__init__(self,master)
-    self.pack()
-    self.createWidgets()
-
-  def createWidgets(self):
-    self.QUIT = Button(self)
-    self.QUIT['text'] = 'Salir'
-    self.QUIT['fg'] = 'red'
-    self.QUIT['command'] = self.quit
-    self.QUIT.pack(side=LEFT, padx=10,pady=10)
-  
-
 window = Tk()
 window.title('K@PTA Excel Auditorias')
 window.wm_iconbitmap('img/kapta_mex.ico')
 window.geometry('{}x{}'.format(800, 600))
 # window.resizable(0,0)
+
 
 window.filename = askopenfilename( filetypes = (("Archivos de Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))
 
@@ -42,6 +30,7 @@ wb = load_workbook(filename = window.filename, data_only=True)
 sheets = wb.sheetnames[3:12]
 
 archivo = Label(window, text='En el archivo ' + window.filename)
+archivo.grid(row=1, column=1)
 archivo.pack()
 
 for sheet in sheets:
@@ -66,6 +55,7 @@ for sheet in sheets:
     essential_without_filter = next(i for i in essential if i is not None)
 
     if(row[23].value == "N" and zero_categories_without_filter == 0 and audit_categories_without_filter == 'Audit' ):
+
       negativos = Label(window, text='Valor ' + str(row[23].value) +  ' en la celda ' +  str(row[23]),font=("Helvetica", 13))
       negativos.configure(foreground="blue")
       negativos.pack()
@@ -76,12 +66,8 @@ for sheet in sheets:
       audit = Label(window, text='Valor ' + str(audit_categories_without_filter) + ' en la celda ' +  str(row[13]),font=("Helvetica", 9))
       audit.pack()
 
-      # Essential
-      # Contract 
-      # Optional
-
+      # Essential,Contract, Optional
       essentials = Label(window, text='Valor ' + str(essential_without_filter) + ' en la celda ' +  str(row[15]),font=("Helvetica", 8))
       essentials.pack()
 
-app = App(master=window)
-app.mainloop()
+window.mainloop()

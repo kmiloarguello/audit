@@ -11,9 +11,7 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
-
 # Functions
-
 def myFunction():
   ne = Label(window, text='Hola',bg="red")
   ne.pack()
@@ -158,7 +156,7 @@ for sheet in sheets:
     picture_categories_without_filter = next(i for i in picture if i is not None)
 
 
-    if(row[23].value == "N" and zero_categories_without_filter == 0):
+    if(row[23].value == "N" and zero_categories_without_filter == 0 and audit_categories_without_filter == 'Audit' or audit_categories_without_filter == 'Audit / Regional Office' ):
       myHoja.extend([sheet])
       myN.extend([str(row[23].value)])
       myZero.extend([str(zero_categories_without_filter)])

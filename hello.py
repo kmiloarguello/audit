@@ -89,65 +89,82 @@ essential = []
 wb = load_workbook(filename = window.filename, data_only=True)
 sheets = wb.sheetnames[3:12]
 
+myHoja = []
+myN = []
+myZero = []
+myAudit = []
+myEssentials = []
 
-# myRows = []
+for sheet in sheets:
+  ws = wb[sheet]
 
-# for ii in range(5):
-#   myCols = []
-#   for jj in range(4):
-#     e = Entry(relief=RIDGE)
-#     e.grid(row=ii,column=jj,sticky=NSEW, ipadx=30)
-#     e.insert(END, 2)
-#     myCols.append(e)
-#   myRows.append(myCols)
+  for row in ws.rows: 
+    numberCategory.insert(0,row[23].value)  
+    number_categories_without_filter = next(i for i in numberCategory if i is not None)
+    index_number_categories.extend([number_categories_without_filter])
 
-auditInfo = {'rec1': {'col1': 99.88, 'col2': 108.79, 'label': 'rec1'},}
+    zerovalue.insert(0,row[25].value)  
+    zero_categories_without_filter = next(i for i in zerovalue if i is not None)
+
+    auditvalue.insert(0,row[13].value)  
+    audit_categories_without_filter = next(i for i in auditvalue if i is not None)
+
+    essential.insert(0,row[15].value)  
+    essential_without_filter = next(i for i in essential if i is not None)
+
+    if(row[23].value == "N" and zero_categories_without_filter == 0):
+      myHoja.extend([sheet])
+      myN.extend([str(row[23].value)])
+      myZero.extend([str(zero_categories_without_filter)])
+      myAudit.extend([str(audit_categories_without_filter)])
+      myEssentials.extend([str(essential_without_filter)])
 
 tframe = Frame(window)
 tframe.pack()
 model = TableModel()
-table = TableCanvas(tframe,model=model,editable=False)
+table = TableCanvas(tframe,model=model,editable=False,rowheaderwidth=50)
 table.createTableFrame()
-
 model = table.model
-model.importDict(auditInfo)
+
+dict = {}
+
+for i in range(len(myHoja)):
+  dict[i] = {'ID': i}
+
+model.importDict(dict)
+
+table.addColumn('Hoja Excel')
+table.addColumn('Standard')
+table.addColumn('Number')
+table.addColumn('Requirement 2015')
+table.addColumn('Comments')
+table.addColumn('Type of Check')
+table.addColumn('Essentials')
+table.addColumn('Audit Question')
+table.addColumn('Observation / Evidence Required / Audit Remarks')
+table.addColumn('Suggested Person to ask')
+table.addColumn('Evaluation(0/1')
+table.addColumn('Result')
+table.addColumn('Audit Comments')
+table.addColumn('Picture / Statement / Proof')
+
+for i in range(len(myHoja)):
+  table.model.data[i]['Hoja Excel'] = myHoja[i]
+  # table.model.data[i]['Standard'] = 0
+  # table.model.data[i]['Number'] 
+  # table.model.data[i]['Requirement 2015']
+  # table.model.data[i]['Comments']
+  table.model.data[i]['Type of Check'] = myAudit[i]
+  table.model.data[i]['Essentials'] = myEssentials[i]
+  # table.model.data[i]['Audit Question']
+  # table.model.data[i]['Observation / Evidence Required / Audit Remarks']
+  # table.model.data[i]['Suggested Person to ask']
+  table.model.data[i]['Evaluation (0/1)'] = myN[i]
+  table.model.data[i]['Result'] = myZero[i]
+  # table.model.data[i]['Audit Comments']
+  # table.model.data[i]['Picture / Statement / Proof']
+
+
 table.redrawTable()
-
-
-for sheet in sheets:
-  ws = wb[sheet]
-  hoja = Label(window, text='En la hoja ' + sheet,bg='white')
-  hoja.configure(foreground="red")
-  hoja.pack()
-
-#   for row in ws.rows: 
-#     numberCategory.insert(0,row[23].value)  
-#     number_categories_without_filter = next(i for i in numberCategory if i is not None)
-#     index_number_categories.extend([number_categories_without_filter])
-
-#     zerovalue.insert(0,row[25].value)  
-#     zero_categories_without_filter = next(i for i in zerovalue if i is not None)
-
-#     auditvalue.insert(0,row[13].value)  
-#     audit_categories_without_filter = next(i for i in auditvalue if i is not None)
-
-#     essential.insert(0,row[15].value)  
-#     essential_without_filter = next(i for i in essential if i is not None)
-
-#     if(row[23].value == "N" and zero_categories_without_filter == 0 and audit_categories_without_filter == 'Audit' ):
-
-#       negativos = Label(window, text='Valor ' + str(row[23].value) +  ' en la celda ' +  str(row[23]),font=("Helvetica", 13),bg='white')
-#       negativos.configure(foreground="blue")
-#       negativos.pack()
-
-#       result = Label(window, text='Valor ' + str(zero_categories_without_filter) + ' en la celda ' +  str(row[25]),font=("Helvetica", 10),bg='white')
-#       result.pack()
-      
-#       audit = Label(window, text='Valor ' + str(audit_categories_without_filter) + ' en la celda ' +  str(row[13]),font=("Helvetica", 9),bg='white')
-#       audit.pack()
-
-#       # Essential,Contract, Optional
-#       essentials = Label(window, text='Valor ' + str(essential_without_filter) + ' en la celda ' +  str(row[15]),font=("Helvetica", 8),bg='white')
-#       essentials.pack()
 
 window.mainloop()

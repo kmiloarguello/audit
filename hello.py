@@ -173,8 +173,10 @@ def openExcel():
 
   table.redrawTable()
 
-
   return filename
+
+
+
 
 def openImage():
   filename = askopenfilename( filetypes = (("Imagen", ".jpg"), ("Todos los archivos", "*.*")))

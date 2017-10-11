@@ -4,7 +4,7 @@ from Tkinter import *
 from tkFileDialog import askopenfilename
 from tkintertable import TableCanvas, TableModel
 import tkMessageBox
-
+from PIL import Image, ImageTk
 
 # Openpyxl libs
 from openpyxl import load_workbook
@@ -12,9 +12,11 @@ from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
 # Functions
+def newProject():
+  openExcel()
+
 def myFunction():
-  ne = Label(window, text='Hola',bg="red")
-  ne.pack()
+  print 'hi'
 
 def editMenu():
   print 'Again'
@@ -23,6 +25,9 @@ def helpMenu():
   print 'Help'
 
 def openExcel():
+  excelSection.delete('all')
+
+
   filename = askopenfilename( filetypes = (("EXCEL", ".xlsx"), ("Todos los archivos", "*.*")))
 
   numberCategory = []
@@ -173,13 +178,14 @@ def openExcel():
 
   table.redrawTable()
 
-  return filename
-
-
-
+  return tframe
 
 def openImage():
-  filename = askopenfilename( filetypes = (("Imagen", ".jpg"), ("Todos los archivos", "*.*")))
+  filename = askopenfilename( filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
+  toolbar2 = Frame(window,bg='red')
+  myLabel2 = Label(toolbar2, text=filename, bg='red')
+  myLabel2.pack(side=LEFT)
+  toolbar2.pack(side=TOP, fill=X)
   return filename
 
 def acercaDe():
@@ -203,6 +209,17 @@ window.wm_iconbitmap('img/kapta_mex.ico')
 window.geometry('800x600')
 window.configure(background='white')
 
+# scrollbar = Scrollbar(window)
+# scrollbar.pack(side=RIGHT, fill=Y)
+
+# listbox = Listbox(window, yscrollcommand=scrollbar.set)
+# for i in range(1000):
+#   listbox.insert(END,str(i))
+
+# listbox.pack(side=LEFT, fill=BOTH)
+
+# scrollbar.config(command=listbox.yview)
+
 # Menu
 
 menu = Menu(window)
@@ -210,11 +227,11 @@ window.config(menu=menu)
 
 subMenu = Menu(menu,tearoff=0,bg='white')
 menu.add_cascade(label='Archivo', menu=subMenu)
-subMenu.add_command(label='Nuevo proyecto', command=myFunction)
-subMenu.add_command(label='Abrir Excel', command=openExcel)
-subMenu.add_command(label='Abrir Imagen', command=openImage)
+subMenu.add_command(label='Nuevo proyecto', command=newProject)
+subMenu.add_command(label='Abrir excel', command=openExcel)
+subMenu.add_command(label='Abrir imagen', command=openImage)
 subMenu.add_command(label='Guardar', command=myFunction)
-subMenu.add_command(label='Exportar Excel', command=myFunction)
+subMenu.add_command(label='Exportar excel', command=myFunction)
 subMenu.add_separator()
 subMenu.add_command(label='Acerca de K@PTA', command=acercaDe)
 subMenu.add_command(label='Salir', command=exitApp)
@@ -226,15 +243,19 @@ editMenu.add_command(label='Deshacer', command=myFunction)
 helpMenu = Menu(menu,tearoff=0,bg='white')
 menu.add_cascade(label='Ayuda', menu=helpMenu)
 
+excelSection = Canvas(window, width=800,height=600, bg='red')
+excelSection.pack(fill=BOTH,expand=YES)
+
+print excelSection
+
+image = Image.open('img/bg.png')
+photo = ImageTk.PhotoImage(image)
+imgFile = excelSection.create_image(400,300, image=photo)
+
 # Bottom
 toolbar = Frame(window,bg='white')
 myLabel = Label(toolbar, text='Derechos reservados K@PTA', bg='white')
 myLabel.pack(side=RIGHT)
 toolbar.pack(side=BOTTOM, fill=X)
-
-photoSection = Frame(window,bg='red')
-myLabel = Label(toolbar, text='K@PTA', bg='white')
-myLabel.pack(side=RIGHT)
-toolbar.pack(fill=X)
 
 window.mainloop()

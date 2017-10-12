@@ -25,8 +25,7 @@ def helpMenu():
   print 'Help'
 
 def openExcel():
-  excelSection.delete('all')
-
+  # excelSection.delete('all')
 
   filename = askopenfilename( filetypes = (("EXCEL", ".xlsx"), ("Todos los archivos", "*.*")))
 
@@ -110,24 +109,22 @@ def openExcel():
       picture.insert(0,row[30].value)  
       picture_categories_without_filter = next(i for i in picture if i is not None)
 
-
-      if(row[23].value == "N" and zero_categories_without_filter == 0 and audit_categories_without_filter == 'Audit' or audit_categories_without_filter == 'Audit / Regional Office' ):
+      if(row[23].value == "N" and zero_categories_without_filter == 0  ):
         myHoja.extend([sheet])
         myN.extend([str(row[23].value)])
         myZero.extend([str(zero_categories_without_filter)])
-        myAudit.extend([str(audit_categories_without_filter)])
+        myAudit.extend([audit_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
         myEssentials.extend([str(essential_without_filter)])
         
         myStandard.extend([str(standard_categories_without_filter)])
         myNumber.extend([str(number_categories_without_filter)])
         myRequeriment.extend([requirement_categories_without_filter.encode('utf-8')])
-        myComment.extend([str(comments_categories_without_filter)])
-        myAuditQuestion.extend([str(question_categories_without_filter)])
-        myObservation.extend([str(observation_categories_without_filter)])
-        mySuggested.extend([str(suggested_categories_without_filter)])
-        myAComments.extend([str(auditcomments_categories_without_filter)])
-        myPic.extend([str(picture_categories_without_filter)])
-
+        myComment.extend([comments_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
+        myAuditQuestion.extend([question_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
+        myObservation.extend([observation_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
+        mySuggested.extend([suggested_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
+        myAComments.extend([auditcomments_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
+        myPic.extend([picture_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
 
   tframe = Frame(window)
   tframe.pack()
@@ -153,7 +150,7 @@ def openExcel():
   table.addColumn('Audit Question')
   table.addColumn('Observation / Evidence Required / Audit Remarks')
   table.addColumn('Suggested Person to ask')
-  table.addColumn('Evaluation(0/1')
+  table.addColumn('Evaluation (0/1)')
   table.addColumn('Result')
   table.addColumn('Audit Comments')
   table.addColumn('Picture / Statement / Proof')
@@ -174,7 +171,6 @@ def openExcel():
     table.model.data[i]['Result'] = myZero[i]
     table.model.data[i]['Audit Comments'] = myAComments[i]
     table.model.data[i]['Picture / Statement / Proof'] = myPic[i]
-
 
   table.redrawTable()
 
@@ -243,14 +239,12 @@ editMenu.add_command(label='Deshacer', command=myFunction)
 helpMenu = Menu(menu,tearoff=0,bg='white')
 menu.add_cascade(label='Ayuda', menu=helpMenu)
 
-excelSection = Canvas(window, width=800,height=600, bg='red')
-excelSection.pack(fill=BOTH,expand=YES)
+# excelSection = Canvas(window, width=800,height=600, bg='white')
+# excelSection.pack(fill=BOTH,expand=YES)
 
-print excelSection
-
-image = Image.open('img/bg.png')
-photo = ImageTk.PhotoImage(image)
-imgFile = excelSection.create_image(400,300, image=photo)
+# image = Image.open('img/bg.png')
+# photo = ImageTk.PhotoImage(image)
+# imgFile = excelSection.create_image(400,300, image=photo)
 
 # Bottom
 toolbar = Frame(window,bg='white')

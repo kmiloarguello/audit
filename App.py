@@ -25,8 +25,6 @@ def helpMenu():
   print 'Help'
 
 def openExcel():
-  # excelSection.delete('all')
-
   filename = askopenfilename( filetypes = (("EXCEL", ".xlsx"), ("Todos los archivos", "*.*")))
 
   numberCategory = []
@@ -79,6 +77,8 @@ def openExcel():
       auditvalue.insert(0,row[13].value)  
       audit_categories_without_filter = next(i for i in auditvalue if i is not None)
 
+      final_audit = audit_categories_without_filter.encode('ascii','ignore')
+
       essential.insert(0,row[15].value)  
       essential_without_filter = next(i for i in essential if i is not None)
 
@@ -109,7 +109,9 @@ def openExcel():
       picture.insert(0,row[30].value)  
       picture_categories_without_filter = next(i for i in picture if i is not None)
 
-      if(row[23].value == "N" and zero_categories_without_filter == 0  ):
+
+
+      if(row[23].value == "N" and zero_categories_without_filter == 0 and 'Audit' in final_audit ):
         myHoja.extend([sheet])
         myN.extend([str(row[23].value)])
         myZero.extend([str(zero_categories_without_filter)])
@@ -127,7 +129,7 @@ def openExcel():
         myPic.extend([picture_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
 
   tframe = Frame(window)
-  tframe.pack()
+  tframe.pack(fill=X)
   model = TableModel()
   table = TableCanvas(tframe,model=model,editable=False,rowheaderwidth=50)
   table.createTableFrame()

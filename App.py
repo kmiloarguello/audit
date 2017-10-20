@@ -1,6 +1,4 @@
 # Tkinter lib to create user interface
-import sys
-
 from Tkinter import *
 from tkFileDialog import askopenfilename
 from tkintertable import TableCanvas, TableModel
@@ -12,10 +10,9 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
-sys.stderr = sys.stdout
 entry_txt = StringVar
 
-# Functions
+Functions
 def newProject():
   openExcel()
 
@@ -224,13 +221,17 @@ def exitApp():
   if(exited == True):
     window.destroy()
 
-# Initialization
+# # Initialization
 
 window = Tk()
 window.title('K@PTA Excel Auditorias')
-window.wm_iconbitmap('img/kapta_mex.ico')
+# window.wm_iconbitmap('img/kapta_mex.ico')
 window.geometry('800x600')
 window.configure(background='white')
+
+
+w = Label(window, text="Hola Camilo", bg='white')
+w.pack()
 
 # Menu
 menu = Menu(window)

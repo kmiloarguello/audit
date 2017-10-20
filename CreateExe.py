@@ -1,10 +1,15 @@
-from distutils.core import setup
-import py2exe, sys, os
+from cx_Freeze import setup,Executable
 
-sys.argv.append('py2exe')
+includes = []
+excludes = []
+packages = []
+filename = "App.py"
 
 setup(
-    options = {'py2exe': {'bundle_files': 3, 'compressed': True, 'dll_excludes': ['tcl85.dll', 'tk85.dll']}},
-    console = [{'script': 'App.py'}],
-    zipfile = None,
-    )
+    name = 'Auditorias',
+    version = '0.1',
+    description = 'Auditorias',
+    author = 'KAPTA',
+    author_email = 'camilo.arguello@kapta.biz',
+    options = {'build_exe': {'excludes':excludes,'packages':packages,'includes':includes}},
+    executables = [Executable(filename, base = "Win32GUI", icon = None)])

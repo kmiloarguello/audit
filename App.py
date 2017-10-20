@@ -1,5 +1,6 @@
 # Tkinter lib to create user interface
 import sys
+
 from Tkinter import *
 from tkFileDialog import askopenfilename
 from tkintertable import TableCanvas, TableModel
@@ -10,6 +11,9 @@ from PIL import Image, ImageTk
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
+
+sys.stderr = sys.stdout
+entry_txt = StringVar
 
 # Functions
 def newProject():
@@ -180,11 +184,32 @@ def openExcel():
 
 def openImage():
   filename = askopenfilename( filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
-  toolbar2 = Frame(window,bg='red')
-  myLabel2 = Label(toolbar2, text=filename, bg='red')
-  myLabel2.pack(side=LEFT)
-  toolbar2.pack(side=TOP, fill=X)
+  imgLayout(filename)
   return filename
+
+def returnEntry(parent,entry):
+  e = Entry(parent)
+  e.insert(10,entry)
+  print entry.get()
+
+def imgLayout(filename):
+  img_container = Frame(window)
+  Label(img_container, text="").grid(row=0, column=0)
+
+  Label(img_container, text=filename).grid(row=0, column=1)
+ 
+  entry = Entry(img_container,textvariable=entry_txt)
+  entry.grid(row=0, column=2)
+
+  Button(img_container, text="Renombrar", command=returnEntry(img_container,entry)).grid(row=0, column=3)
+
+  Label(img_container, text="Holi").grid(row=0, column=4)
+
+  # myLabel2 = Label(img_container, text=filename, bg='red')
+  # myLabel2.pack(side=LEFT)
+  img_container.pack(side=TOP, fill=X)
+
+  return img_container
 
 def acercaDe():
   myWindow = Toplevel(window)
@@ -207,19 +232,7 @@ window.wm_iconbitmap('img/kapta_mex.ico')
 window.geometry('800x600')
 window.configure(background='white')
 
-# scrollbar = Scrollbar(window)
-# scrollbar.pack(side=RIGHT, fill=Y)
-
-# listbox = Listbox(window, yscrollcommand=scrollbar.set)
-# for i in range(1000):
-#   listbox.insert(END,str(i))
-
-# listbox.pack(side=LEFT, fill=BOTH)
-
-# scrollbar.config(command=listbox.yview)
-
 # Menu
-
 menu = Menu(window)
 window.config(menu=menu)
 
@@ -240,13 +253,6 @@ editMenu.add_command(label='Deshacer', command=myFunction)
 
 helpMenu = Menu(menu,tearoff=0,bg='white')
 menu.add_cascade(label='Ayuda', menu=helpMenu)
-
-# excelSection = Canvas(window, width=800,height=600, bg='white')
-# excelSection.pack(fill=BOTH,expand=YES)
-
-# image = Image.open('img/bg.png')
-# photo = ImageTk.PhotoImage(image)
-# imgFile = excelSection.create_image(400,300, image=photo)
 
 # Bottom
 toolbar = Frame(window,bg='white')

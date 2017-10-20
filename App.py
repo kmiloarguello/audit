@@ -1,7 +1,8 @@
 # Tkinter lib to create user interface
 from Tkinter import *
 from tkFileDialog import askopenfilename
-from tkintertable import TableCanvas, TableModel
+from tkintertable.Tables import TableCanvas
+from tkintertable.TableModels import TableModel
 import tkMessageBox
 from PIL import Image, ImageTk
 
@@ -12,7 +13,7 @@ from openpyxl.writer.write_only import WriteOnlyCell
 
 entry_txt = StringVar
 
-Functions
+# # Functions
 def newProject():
   openExcel()
 
@@ -187,23 +188,36 @@ def openImage():
 def returnEntry(parent,entry):
   e = Entry(parent)
   e.insert(10,entry)
-  print entry.get()
 
 def imgLayout(filename):
   img_container = Frame(window)
-  Label(img_container, text="").grid(row=0, column=0)
+  Label(img_container, text="  ").grid(row=1, column=0)
+  Label(img_container, text="  ").grid(row=2, column=0)
 
-  Label(img_container, text=filename).grid(row=0, column=1)
- 
+  Label(img_container, text='Ruta de archivo origen', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=1)
+  Label(img_container, text=filename, font=("Helvetica", 8), foreground='#000').grid(row=2, column=1)
+
+  Label(img_container, text='Ruta de archivo para guardar', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=2)
   entry = Entry(img_container,textvariable=entry_txt)
-  entry.grid(row=0, column=2)
+  entry.grid(row=2, column=2)
 
-  Button(img_container, text="Renombrar", command=returnEntry(img_container,entry)).grid(row=0, column=3)
+  Label(img_container, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=3)
+  ex_sh_sel = StringVar(img_container)
+  ex_sh_sel.set('one')
+  option = OptionMenu(img_container, ex_sh_sel, 'one', 'two', 'three', 'four').grid(row=2, column=3)
 
-  Label(img_container, text="Holi").grid(row=0, column=4)
 
-  # myLabel2 = Label(img_container, text=filename, bg='red')
-  # myLabel2.pack(side=LEFT)
+  Label(img_container, text='Seleccione Item', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=4)
+  ex_sh_sel = StringVar(img_container)
+  ex_sh_sel.set('one')
+  option = OptionMenu(img_container, ex_sh_sel, 'one', 'two', 'three', 'four').grid(row=2, column=4)
+
+  Label(img_container, text="   ").grid(row=1, column=5)
+  Label(img_container, text="   ").grid(row=2, column=5)
+
+  Button(img_container, text="Guardar en Excel", command="").grid(row=2, column=6)
+
+
   img_container.pack(side=TOP, fill=X)
 
   return img_container
@@ -211,7 +225,7 @@ def imgLayout(filename):
 def acercaDe():
   myWindow = Toplevel(window)
   myWindow.title('K@PTA')
-  myWindow.wm_iconbitmap('img/kapta_mex.ico')
+  myWindow.wm_iconbitmap('kapta_mex.ico')
   myWindow.geometry('200x100')
   acercaDeContent = Label(myWindow, text='Derechos Reservados K@PTA')
   acercaDeContent.pack()
@@ -221,17 +235,14 @@ def exitApp():
   if(exited == True):
     window.destroy()
 
+
 # # Initialization
 
 window = Tk()
 window.title('K@PTA Excel Auditorias')
-# window.wm_iconbitmap('img/kapta_mex.ico')
+window.wm_iconbitmap('kapta_mex.ico')
 window.geometry('800x600')
 window.configure(background='white')
-
-
-w = Label(window, text="Hola Camilo", bg='white')
-w.pack()
 
 # Menu
 menu = Menu(window)
@@ -242,7 +253,6 @@ menu.add_cascade(label='Archivo', menu=subMenu)
 subMenu.add_command(label='Nuevo proyecto', command=newProject)
 subMenu.add_command(label='Abrir excel', command=openExcel)
 subMenu.add_command(label='Abrir imagen', command=openImage)
-subMenu.add_command(label='Guardar', command=myFunction)
 subMenu.add_command(label='Exportar excel', command=myFunction)
 subMenu.add_separator()
 subMenu.add_command(label='Acerca de K@PTA', command=acercaDe)
@@ -260,5 +270,7 @@ toolbar = Frame(window,bg='white')
 myLabel = Label(toolbar, text='Derechos reservados K@PTA', bg='white')
 myLabel.pack(side=RIGHT)
 toolbar.pack(side=BOTTOM, fill=X)
+
+
 
 window.mainloop()

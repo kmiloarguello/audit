@@ -1,13 +1,19 @@
-import sys
 from Tkinter import *
-from tkintertable import TableCanvas, TableModel
 
-window = Tk()
-window.title('K@PTA Excel Auditorias')
-window.wm_iconbitmap('img/kapta_mex.ico')
-window.geometry('{}x{}'.format(800, 600))
+master = Tk()
+entryb1 = StringVar()
 
-tframe = Frame(master)
+def print_content():
+  global entryb1
+  content = entryb1.get()
+  print content
 
+Label(master, text="Input: ").grid(row=0, sticky=W)
 
-window.mainloop()
+entry = Entry(master, textvariable=entryb1)
+entry.grid(row=1, column=1)
+
+b1 = Button(master, text="continue", command=print_content)
+b1.grid(row=2, column=1)
+
+master.mainloop()

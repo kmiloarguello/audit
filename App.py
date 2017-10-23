@@ -1,6 +1,6 @@
 # Tkinter lib to create user interface
 from Tkinter import *
-from tkFileDialog import askopenfilename
+from tkFileDialog import askopenfilename, asksaveasfilename
 from tkintertable.Tables import TableCanvas
 from tkintertable.TableModels import TableModel
 import tkMessageBox
@@ -10,8 +10,6 @@ from PIL import Image, ImageTk
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
-
-entry_txt = StringVar
 
 # # Functions
 def newProject():
@@ -26,9 +24,66 @@ def editMenu():
 def helpMenu():
   print 'Help'
 
-def openExcel():
-  filename = askopenfilename( filetypes = (("EXCEL", ".xlsx"), ("Todos los archivos", "*.*")))
+def returnEntry():
 
+  img_container2 = Toplevel(window)
+  img_container2.title('K@PTA')
+  img_container2.wm_iconbitmap('kapta_mex.ico')
+  img_container2.geometry('400x100')
+
+  Label(img_container2, text="  ").grid(row=1, column=0)
+  Label(img_container2, text="  ").grid(row=2, column=0)
+
+  Label(img_container2, text='Selecciona el archivo para guardar', font=("Helvetica", 10)).grid(row=1, column=2)
+
+  # Button(img_container2, text="Guardar en Excel", command=loadExceltoSave).grid(row=2, column=2)
+
+  Label(img_container2, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=2)
+  ex_sh_sel = StringVar(img_container2)
+  ex_sh_sel.set('Section 1_Brand Architecture')
+  option = OptionMenu(img_container2, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=4, column=2)
+
+  Label(img_container2, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=5)
+  ex_sh_sel2 = StringVar(img_container2)
+  ex_sh_sel2.set('0.0')
+  option2 = OptionMenu(img_container2, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
+
+  Button(img_container2, text="Guardar en Excel", command=saveFile).grid(row=4, column=7)
+
+def saveFile():
+  filename = asksaveasfilename( filetypes = (("Imagen Auditorias", ".jpg"), ("Todos los archivos", "*.*")))
+
+def loadExceltoSave():
+  filename = askopenfilename( filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))
+  return filename
+
+
+def contImagen():
+  Label(window, text='Ruta de archivo origen', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=1)
+  Label(window, text='hola', font=("Helvetica", 8), foreground='#000').grid(row=2, column=1)
+  Button(window, text="Guardar en Excel", command=imgLayout).grid(row=1, column=4)
+
+def imgLayout(filename):
+  img_container2 = Frame(window)
+  Label(img_container2, text="  ").grid(row=1, column=0)
+  Label(img_container2, text="  ").grid(row=2, column=0)
+
+  Label(img_container2, text='Ruta de archivo origen', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=2)
+  Label(img_container2, text=filename, font=("Helvetica", 8), foreground='#000').grid(row=2, column=2)
+
+  Label(img_container2, text='Nombre a guardar', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=4)
+  entry = Entry(img_container2,textvariable=entry_txt)
+  entry.grid(row=2, column=4)
+
+  Button(img_container2, text="Opciones", command=returnEntry).grid(row=2, column=6)
+
+  img_container2.pack(side=TOP, fill=X)
+
+  return img_container
+
+
+def openExcel():
+  filename = askopenfilename( filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))
   numberCategory = []
   zerovalue = []
   index_number_categories = []
@@ -90,6 +145,7 @@ def openExcel():
       number.insert(0,row[1].value)  
       number_categories_without_filter = next(i for i in number if i is not None)
 
+
       requirement.insert(0,row[2].value)  
       requirement_categories_without_filter = next(i for i in requirement if i is not None)
 
@@ -131,7 +187,7 @@ def openExcel():
         myPic.extend([picture_categories_without_filter.encode('ascii', 'ignore').decode('ascii')])
 
   tframe = Frame(window)
-  tframe.pack(fill=X)
+  tframe.pack(fill=BOTH)
   model = TableModel()
   table = TableCanvas(tframe,model=model,editable=False,rowheaderwidth=50)
   table.createTableFrame()
@@ -159,7 +215,6 @@ def openExcel():
   table.addColumn('Audit Comments')
   table.addColumn('Picture / Statement / Proof')
 
-
   for i in range(len(myHoja)):
     table.model.data[i]['Hoja Excel'] = myHoja[i]
     table.model.data[i]['Standard'] = myStandard[i]
@@ -178,49 +233,14 @@ def openExcel():
 
   table.redrawTable()
 
-  return tframe
+  img_container = Frame(window)
+  Label(img_container, text='IMAGENES', font=("Helvetica", 10), foreground='#E38929').grid(row=0, column=2)
+  img_container.pack(side=TOP, fill=X)
 
 def openImage():
   filename = askopenfilename( filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
   imgLayout(filename)
   return filename
-
-def returnEntry(parent,entry):
-  e = Entry(parent)
-  e.insert(10,entry)
-
-def imgLayout(filename):
-  img_container = Frame(window)
-  Label(img_container, text="  ").grid(row=1, column=0)
-  Label(img_container, text="  ").grid(row=2, column=0)
-
-  Label(img_container, text='Ruta de archivo origen', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=1)
-  Label(img_container, text=filename, font=("Helvetica", 8), foreground='#000').grid(row=2, column=1)
-
-  Label(img_container, text='Ruta de archivo para guardar', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=2)
-  entry = Entry(img_container,textvariable=entry_txt)
-  entry.grid(row=2, column=2)
-
-  Label(img_container, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=3)
-  ex_sh_sel = StringVar(img_container)
-  ex_sh_sel.set('one')
-  option = OptionMenu(img_container, ex_sh_sel, 'one', 'two', 'three', 'four').grid(row=2, column=3)
-
-
-  Label(img_container, text='Seleccione Item', font=("Helvetica", 10), foreground='#303133').grid(row=1, column=4)
-  ex_sh_sel = StringVar(img_container)
-  ex_sh_sel.set('one')
-  option = OptionMenu(img_container, ex_sh_sel, 'one', 'two', 'three', 'four').grid(row=2, column=4)
-
-  Label(img_container, text="   ").grid(row=1, column=5)
-  Label(img_container, text="   ").grid(row=2, column=5)
-
-  Button(img_container, text="Guardar en Excel", command="").grid(row=2, column=6)
-
-
-  img_container.pack(side=TOP, fill=X)
-
-  return img_container
 
 def acercaDe():
   myWindow = Toplevel(window)
@@ -241,8 +261,11 @@ def exitApp():
 window = Tk()
 window.title('K@PTA Excel Auditorias')
 window.wm_iconbitmap('kapta_mex.ico')
-window.geometry('800x600')
+window.geometry('800x400')
 window.configure(background='white')
+
+
+entry_txt = StringVar()
 
 # Menu
 menu = Menu(window)
@@ -250,10 +273,9 @@ window.config(menu=menu)
 
 subMenu = Menu(menu,tearoff=0,bg='white')
 menu.add_cascade(label='Archivo', menu=subMenu)
-subMenu.add_command(label='Nuevo proyecto', command=newProject)
 subMenu.add_command(label='Abrir excel', command=openExcel)
 subMenu.add_command(label='Abrir imagen', command=openImage)
-subMenu.add_command(label='Exportar excel', command=myFunction)
+subMenu.add_command(label='Exportar excel', command="")
 subMenu.add_separator()
 subMenu.add_command(label='Acerca de K@PTA', command=acercaDe)
 subMenu.add_command(label='Salir', command=exitApp)

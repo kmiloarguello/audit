@@ -1,19 +1,21 @@
-from Tkinter import *
+from tkinter import *
+from pandastable import Table, TableModel
 
-master = Tk()
-entryb1 = StringVar()
+class TestApp(Frame):
+    """Basic test frame for the table"""
+    def __init__(self, parent=None):
+        self.parent = parent
+        Frame.__init__(self)
+        self.main = self.master
+        self.main.geometry('600x400+200+100')
+        self.main.title('Table app')
+        f = Frame(self.main)
+        f.pack(fill=BOTH,expand=1)
+        df = TableModel.getSampleData()
+        self.table = pt = Table(f)
+        pt.show()
+        return
 
-def print_content():
-  global entryb1
-  content = entryb1.get()
-  print content
-
-Label(master, text="Input: ").grid(row=0, sticky=W)
-
-entry = Entry(master, textvariable=entryb1)
-entry.grid(row=1, column=1)
-
-b1 = Button(master, text="continue", command=print_content)
-b1.grid(row=2, column=1)
-
-master.mainloop()
+app = TestApp()
+#launch the app
+app.mainloop()

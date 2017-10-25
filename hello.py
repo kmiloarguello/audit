@@ -11,71 +11,6 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 
-# Functions
-def myFunction():
-  ne = Label(window, text='Hola',bg="red")
-  ne.pack()
-
-def editMenu():
-  print 'Again'
-
-def helpMenu():
-  print 'Help'
-
-def openExcel():
-  print 'hola'
-
-def acercaDe():
-  myWindow = Toplevel(window)
-  myWindow.title('K@PTA')
-  myWindow.wm_iconbitmap('img/kapta_mex.ico')
-  myWindow.geometry('200x100')
-  acercaDeContent = Label(myWindow, text='Derechos Reservados K@PTA')
-  acercaDeContent.pack()
-
-def exitApp():
-  exited = tkMessageBox.askyesno('Salir','Esta seguro?')
-  if(exited == True):
-    window.destroy()
-
-# Initialization
-
-window = Tk()
-window.title('K@PTA Excel Auditorias')
-window.wm_iconbitmap('img/kapta_mex.ico')
-window.geometry('800x600')
-window.configure(background='white')
-
-# Menu
-
-menu = Menu(window)
-window.config(menu=menu)
-
-subMenu = Menu(menu,tearoff=0,bg='white')
-menu.add_cascade(label='Archivo', menu=subMenu)
-subMenu.add_command(label='Nuevo proyecto', command=myFunction)
-subMenu.add_command(label='Abrir Excel', command=openExcel)
-subMenu.add_command(label='Guardar', command=myFunction)
-subMenu.add_command(label='Exportar Excel', command=myFunction)
-subMenu.add_separator()
-subMenu.add_command(label='Acerca de K@PTA', command=acercaDe)
-subMenu.add_command(label='Salir', command=exitApp)
-
-editMenu = Menu(menu,tearoff=0,bg='white')
-menu.add_cascade(label='Editar', menu=editMenu)
-editMenu.add_command(label='Deshacer', command=myFunction)
-
-helpMenu = Menu(menu,tearoff=0,bg='white')
-menu.add_cascade(label='Ayuda', menu=helpMenu)
-
-# Bottom
-toolbar = Frame(window,bg='white')
-myLabel = Label(toolbar, text='Derechos Reservados K@PTA', bg='white')
-myLabel.pack(side=RIGHT)
-toolbar.pack(side=BOTTOM, fill=X)
-  
-window.filename = askopenfilename( filetypes = (("Archivos de Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))
-
 numberCategory = []
 zerovalue = []
 index_number_categories = []
@@ -91,7 +26,8 @@ question = []
 observation = []
 suggested = []
 
-wb = load_workbook(filename = window.filename, data_only=True)
+wb = load_workbook(filename = 'xlsx/BMW_Sales_Standards_2016_ME.xlsx', data_only=True)
+
 sheets = wb.sheetnames[3:12]
 
 myHoja = []
@@ -110,6 +46,7 @@ myAComments = []
 myPic = []
 auditcomments = []
 picture = []
+
 
 for sheet in sheets:
   ws = wb[sheet]
@@ -155,14 +92,16 @@ for sheet in sheets:
     picture.insert(0,row[30].value)  
     picture_categories_without_filter = next(i for i in picture if i is not None)
 
+    final_audit = audit_categories_without_filter.encode('ascii','ignore')
 
-    if(row[23].value == "N" and zero_categories_without_filter == 0 and audit_categories_without_filter == 'Audit' or audit_categories_without_filter == 'Audit / Regional Office' ):
+    if(row[23].value == "N" and zero_categories_without_filter == 0 and 'Audit' in final_audit ):
       myHoja.extend([sheet])
       myN.extend([str(row[23].value)])
       myZero.extend([str(zero_categories_without_filter)])
       myAudit.extend([str(audit_categories_without_filter)])
       myEssentials.extend([str(essential_without_filter)])
       
+      print myAudit 
       myStandard.extend([str(standard_categories_without_filter)])
       myNumber.extend([str(number_categories_without_filter)])
       myRequeriment.extend([requirement_categories_without_filter.encode('utf-8')])
@@ -172,55 +111,3 @@ for sheet in sheets:
       mySuggested.extend([str(suggested_categories_without_filter)])
       myAComments.extend([str(auditcomments_categories_without_filter)])
       myPic.extend([str(picture_categories_without_filter)])
-
-
-tframe = Frame(window)
-tframe.pack()
-model = TableModel()
-table = TableCanvas(tframe,model=model,editable=False,rowheaderwidth=50)
-table.createTableFrame()
-model = table.model
-
-dict = {}
-
-for i in range(len(myHoja)):
-  dict[i] = {'ID': i}
-
-model.importDict(dict)
-
-table.addColumn('Hoja Excel')
-table.addColumn('Standard')
-table.addColumn('Number')
-table.addColumn('Requirement 2015')
-table.addColumn('Comments')
-table.addColumn('Type of Check')
-table.addColumn('Essentials')
-table.addColumn('Audit Question')
-table.addColumn('Observation / Evidence Required / Audit Remarks')
-table.addColumn('Suggested Person to ask')
-table.addColumn('Evaluation(0/1')
-table.addColumn('Result')
-table.addColumn('Audit Comments')
-table.addColumn('Picture / Statement / Proof')
-
-
-for i in range(len(myHoja)):
-  table.model.data[i]['Hoja Excel'] = myHoja[i]
-  table.model.data[i]['Standard'] = myStandard[i]
-  table.model.data[i]['Number'] = myNumber[i]
-  table.model.data[i]['Requirement 2015'] = myRequeriment[i]
-  table.model.data[i]['Comments'] = myComment[i]
-  table.model.data[i]['Type of Check'] = myAudit[i]
-  table.model.data[i]['Essentials'] = myEssentials[i]
-  table.model.data[i]['Audit Question'] = myAuditQuestion[i]
-  table.model.data[i]['Observation / Evidence Required / Audit Remarks'] = myObservation[i]
-  table.model.data[i]['Suggested Person to ask'] = mySuggested[i]
-  table.model.data[i]['Evaluation (0/1)'] = myN[i]
-  table.model.data[i]['Result'] = myZero[i]
-  table.model.data[i]['Audit Comments'] = myAComments[i]
-  table.model.data[i]['Picture / Statement / Proof'] = myPic[i]
-
-
-table.redrawTable()
-
-window.mainloop()

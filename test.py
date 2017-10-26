@@ -6,18 +6,23 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 import types
-from pandastable import Table, TableModel
- 
+# from pandastable import Table, TableModel
+from tkintertable.Tables import TableCanvas
+from tkintertable.TableModels import TableModel
+
+
 myColor = 'white'
 
 class OtherFrame(Toplevel):
-    """"""
+    """Main Interaction of the App. Here the app shows the Excel and let to the user upload an image."""
     #----------------------------------------------------------------------
     def __init__(self, original):
       """Constructor"""
       self.original_frame = original
       Toplevel.__init__(self)
       self.wm_iconbitmap('kapta_mex.ico')
+      
+      #Center the window
 
       myW = 800
       myH = 400
@@ -30,26 +35,63 @@ class OtherFrame(Toplevel):
 
       self.geometry('%dx%d+%d+%d' % (myW, myH, myX, myY))
 
+      """
+      Define Name and background color for the window
+      """
+
       # self.geometry("800x400")
       self.title("K@PTA Auditorias")
-      self.configure(background=myColor)
+      # self.configure(background=myColor)
+
+      """
+      Load Menu and Excel for star the app
+      After that render the Excel into a Frame.
+      """
 
       self.loadMenu()
-      self.loadExcel()
-
+      
       self.frame = Frame(self)
-      self.frame.pack(fill=X,expand=1)
+      self.loadExcel()
       self.renderExcel()
+      self.frame.pack(fill=BOTH)
+
+      """
+      Frame to upload the image and manage it.
+      """
+
+      self.line = Frame(self, relief=RAISED, borderwidth=1)
+      self.line.pack(fill=BOTH, expand=True)
+
+      # self.image_container = Frame(self)
+      # Label(self.image_container, text='Imagenes para guardar en excel', font=("Helvetica", 15), foreground='#000').pack(pady=20)
+      # self.buttonImage()
+      # self.image_container.pack(fill=X, pady=5)
+
+      """
+      Button of CLOSE
+      """
 
       self.frame2 = Frame(self)
       btn = Button(self.frame2, text="Close", command=self.onClose)
       btn.pack()
       self.frame2.pack()
 
-      self.toolbar = Frame(self,bg='white')
-      self.myLabel = Label(self.toolbar, text='Derechos reservados K@PTA', bg='white')
-      self.myLabel.pack(side=RIGHT)
-      self.toolbar.pack(side=BOTTOM, fill=X)
+      """
+      # Scrollbar funcionality
+
+      self.scrollbar = Scrollbar(self)
+      self.scrollbar.pack(side=RIGHT, fill=Y)
+
+      self.listbox = Listbox(self.image_container, yscrollcommand=self.scrollbar.set)
+      for i in range(1000):
+        self.listbox.insert(END, str(i))
+      self.listbox.pack(side=LEFT, fill=BOTH)
+
+      self.scrollbar.config(command=self.listbox.yview)
+
+      """
+
+      self.footer()
 
     #----------------------------------------------------------------------
     def loadMenu(self):
@@ -73,6 +115,16 @@ class OtherFrame(Toplevel):
       self.menu.add_cascade(label='Ayuda', menu=self.helpMenu)
 
     #----------------------------------------------------------------------
+    """
+    LOAD EXCEL Funcionality
+    
+    1. arraysInit() -> is the initialization of every array
+    2. loadExcel() -> Load the excel file
+    3. withoutFilter() -> Return a list with cell without None values
+    4. loadWorkbook() -> Load from the file, the sheets and each column. Make search functionality
+    5. renderExcel() -> Puth the info of file inside of a canvas using tkintertables
+
+    """
     def arraysInit(self):
       self.numberCategory = []
       self.zerovalue = []
@@ -105,6 +157,11 @@ class OtherFrame(Toplevel):
       self.auditcomments = []
       self.picture = []        
     
+    def loadExcel(self):
+      self.filename = askopenfilename( initialdir = "/KAPTA Camilo/python/xlsx",title = "Subir archivo de excel", filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))  
+      self.arraysInit()
+      self.loadWorkbook()
+
     def withoutFilter(self,item,cell):
       """
         The NumberTypes variable stores all numeric data type from types library
@@ -160,14 +217,120 @@ class OtherFrame(Toplevel):
             self.myAComments.extend([final_auditcomments])
             self.myPic.extend([final_picture])
         
-    def loadExcel(self):
-      self.filename = askopenfilename( initialdir = "/KAPTA Camilo/python/xlsx",title = "Subir archivo de excel", filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))  
-      self.arraysInit()
-      self.loadWorkbook()
-
     def renderExcel(self):
-      self.table = Table(self.frame)
-      self.table.show()
+      self.model = TableModel()
+      self.table = TableCanvas(self.frame,model=self.model,editable=False,rowheaderwidth=100)
+      self.table.createTableFrame()
+      self.model = self.table.model
+
+      dict = {}
+
+      for i in range(len(self.myHoja)):
+        dict[i] = {'ID': i}
+
+      self.model.importDict(dict)
+
+      self.table.addColumn('Hoja Excel')
+      self.table.addColumn('Standard')
+      self.table.addColumn('Number')
+      self.table.addColumn('Requirement 2015')
+      self.table.addColumn('Comments')
+      self.table.addColumn('Type of Check')
+      self.table.addColumn('Essentials')
+      self.table.addColumn('Audit Question')
+      self.table.addColumn('Observation / Evidence Required / Audit Remarks')
+      self.table.addColumn('Suggested Person to ask')
+      self.table.addColumn('Evaluation (0/1)')
+      self.table.addColumn('Result')
+      self.table.addColumn('Audit Comments')
+      self.table.addColumn('Picture / Statement / Proof')
+
+      for i in range(len(self.myHoja)):
+        self.table.model.data[i]['Hoja Excel'] = self.myHoja[i]
+        self.table.model.data[i]['Standard'] = self.myStandard[i]
+        self.table.model.data[i]['Number'] = self.myNumber[i]
+        self.table.model.data[i]['Requirement 2015'] = self.myRequeriment[i]
+        self.table.model.data[i]['Comments'] = self.myComment[i]
+        self.table.model.data[i]['Type of Check'] = self.myAudit[i]
+        self.table.model.data[i]['Essentials'] = self.myEssentials[i]
+        self.table.model.data[i]['Audit Question'] = self.myAuditQuestion[i]
+        self.table.model.data[i]['Observation / Evidence Required / Audit Remarks'] = self.myObservation[i]
+        self.table.model.data[i]['Suggested Person to ask'] = self.mySuggested[i]
+        self.table.model.data[i]['Evaluation (0/1)'] = self.myN[i]
+        self.table.model.data[i]['Result'] = self.myZero[i]
+        self.table.model.data[i]['Audit Comments'] = self.myAComments[i]
+        self.table.model.data[i]['Picture / Statement / Proof'] = self.myPic[i]
+
+      self.table.redrawTable()
+    
+    #----------------------------------------------------------------------
+    """
+    LOAD EXCEL Funcionality
+    
+    1. arraysInit() -> is the initialization of every array
+    2. loadExcel() -> Load the excel file
+    3. withoutFilter() -> Return a list with cell without None values
+    4. loadWorkbook() -> Load from the file, the sheets and each column. Make search functionality
+    5. renderExcel() -> Puth the info of file inside of a canvas using tkintertables
+
+    """
+    def buttonImage(self):
+      self.load_cont_img = Frame(self.image_container)
+      self.button_load = Button(self.load_cont_img, justify=LEFT,command=self.loadImage, text="Subir imagen")
+      self.button_load.pack()
+      self.load_cont_img.pack(side=TOP,fill=X)
+    
+    def loadImage(self):
+      self.file_image = askopenfilename( initialdir = "/KAPTA Camilo/python/img",title = "Subir imagen para guardar en excel", filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
+      self.contImage()
+    
+    def contImage(self):
+      self.rutaImg = Frame(self.image_container)
+      Label(self.rutaImg, text="  ").grid(row=1, column=0)
+      Label(self.rutaImg, text="  ").grid(row=2, column=0)
+
+      Label(self.rutaImg, text='Ruta de archivo origen', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=2)
+      Label(self.rutaImg, text=self.file_image, font=("Helvetica", 8), foreground='#000').grid(row=2, column=2)
+
+      Label(self.rutaImg, text='Nombre a guardar', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=4)
+      entry = Entry(self.rutaImg,textvariable="entry_txt")
+      entry.grid(row=2, column=4)
+
+      Button(self.rutaImg, text="Opciones", command=self.optionsImages()).grid(row=2, column=6)
+
+      self.rutaImg.pack(side=TOP, fill=X)
+    
+    def optionsImages(self):
+      self.optionImage = Toplevel(self)
+      self.optionImage.title('K@PTA')
+      self.optionImage.wm_iconbitmap('kapta_mex.ico')
+      self.optionImage.geometry('400x100')
+
+      # Label(self.optionImage, text="  ").grid(row=1, column=0)
+      # Label(self.optionImage, text="  ").grid(row=2, column=0)
+
+      # Label(self.optionImage, text='Selecciona el archivo para guardar', font=("Helvetica", 10)).grid(row=1, column=2)
+
+      # # Button(self.optionImage, text="Guardar en Excel", command=loadExceltoSave).grid(row=2, column=2)
+
+      # Label(self.optionImage, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=2)
+      # ex_sh_sel = StringVar(self.optionImage)
+      # ex_sh_sel.set('Section 1_Brand Architecture')
+      # option = OptionMenu(self.optionImage, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=4, column=2)
+
+      # Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=5)
+      # ex_sh_sel2 = StringVar(self.optionImage)
+      # ex_sh_sel2.set('0.0')
+      # option2 = OptionMenu(self.optionImage, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
+
+      # Button(self.optionImage, text="Guardar en Excel", command=saveFile).grid(row=4, column=7)
+    
+    #----------------------------------------------------------------------
+    def footer(self):
+      self.toolbar = Frame(self,bg='white')
+      self.myLabel = Label(self.toolbar, text='Derechos reservados K@PTA', bg='white')
+      self.myLabel.pack(side=RIGHT)
+      self.toolbar.pack(side=BOTTOM, fill=X)
 
     #----------------------------------------------------------------------
     def acercaDe(self):
@@ -178,6 +341,7 @@ class OtherFrame(Toplevel):
       Label(self.about, text='Derechos Reservados K@PTA \n Desarrollador Camilo Arguello \n Farrell, D 2016 DataExplore: An Application for General Data Analysis in Research and Education. Journal of Open Research Software, 4: e9, DOI: http://dx.doi.org/10.5334/jors.94', font=("Segoe UI", 9), justify=LEFT).pack()
     #----------------------------------------------------------------------
     def onClose(self):
+      
       """"""
       self.destroy()
       self.quit()

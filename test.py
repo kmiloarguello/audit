@@ -53,19 +53,19 @@ class OtherFrame(Toplevel):
       self.frame = Frame(self)
       self.loadExcel()
       self.renderExcel()
-      self.frame.pack(fill=BOTH)
+      self.frame.pack(fill=X)
 
       """
       Frame to upload the image and manage it.
       """
 
       self.line = Frame(self, relief=RAISED, borderwidth=1)
-      self.line.pack(fill=BOTH, expand=True)
+      self.line.pack(fill=X,)
 
-      # self.image_container = Frame(self)
-      # Label(self.image_container, text='Imagenes para guardar en excel', font=("Helvetica", 15), foreground='#000').pack(pady=20)
-      # self.buttonImage()
-      # self.image_container.pack(fill=X, pady=5)
+      self.image_container = Frame(self)
+      Label(self.image_container, text='Imagenes para guardar en excel', font=("Helvetica", 15), foreground='#000').pack(pady=20)
+      self.buttonImage()
+      self.image_container.pack(fill=X, pady=5)
 
       """
       Button of CLOSE
@@ -219,7 +219,7 @@ class OtherFrame(Toplevel):
         
     def renderExcel(self):
       self.model = TableModel()
-      self.table = TableCanvas(self.frame,model=self.model,editable=False,rowheaderwidth=100)
+      self.table = TableCanvas(self.frame,model=self.model,editable=False,rowheaderwidth=50)
       self.table.createTableFrame()
       self.model = self.table.model
 
@@ -296,34 +296,57 @@ class OtherFrame(Toplevel):
       entry = Entry(self.rutaImg,textvariable="entry_txt")
       entry.grid(row=2, column=4)
 
-      Button(self.rutaImg, text="Opciones", command=self.optionsImages()).grid(row=2, column=6)
-
-      self.rutaImg.pack(side=TOP, fill=X)
-    
-    def optionsImages(self):
-      self.optionImage = Toplevel(self)
-      self.optionImage.title('K@PTA')
-      self.optionImage.wm_iconbitmap('kapta_mex.ico')
-      self.optionImage.geometry('400x100')
-
-      # Label(self.optionImage, text="  ").grid(row=1, column=0)
-      # Label(self.optionImage, text="  ").grid(row=2, column=0)
-
       # Label(self.optionImage, text='Selecciona el archivo para guardar', font=("Helvetica", 10)).grid(row=1, column=2)
 
-      # # Button(self.optionImage, text="Guardar en Excel", command=loadExceltoSave).grid(row=2, column=2)
+      # Button(self.optionImage, text="Subir en Excel", command="loadExceltoSave").grid(row=2, column=2)
 
-      # Label(self.optionImage, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=2)
-      # ex_sh_sel = StringVar(self.optionImage)
-      # ex_sh_sel.set('Section 1_Brand Architecture')
-      # option = OptionMenu(self.optionImage, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=4, column=2)
+      Label(self.rutaImg, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=8)
+      ex_sh_sel = StringVar(self.rutaImg)
+
+      ex_sh_sel.set(self.sheets[0])
+
+      # for i in range(len(self.sheets)):
+      #   print self.sheets[i]
+      option_sheet = OptionMenu(self.rutaImg, ex_sh_sel, tuple(self.sheets))
+      option_sheet.pack()
+
+      # option = OptionMenu(self.rutaImg, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=2, column=8)
 
       # Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=5)
       # ex_sh_sel2 = StringVar(self.optionImage)
       # ex_sh_sel2.set('0.0')
       # option2 = OptionMenu(self.optionImage, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
 
-      # Button(self.optionImage, text="Guardar en Excel", command=saveFile).grid(row=4, column=7)
+      # Button(self.optionImage, text="Guardar en Excel", command="saveFile").grid(row=4, column=7)
+
+      # self.optionImage.pack()
+
+      self.rutaImg.pack(side=TOP, fill=X)
+    
+    def optionsImages(self):
+      # self.optionImage = Toplevel(self)
+      # self.optionImage.title('K@PTA')
+      # self.optionImage.wm_iconbitmap('kapta_mex.ico')
+      # self.optionImage.geometry('400x100')
+      self.optionImage = Frame(self)
+
+      Label(self.optionImage, text='Selecciona el archivo para guardar', font=("Helvetica", 10)).grid(row=1, column=2)
+
+      # Button(self.optionImage, text="Guardar en Excel", command=loadExceltoSave).grid(row=2, column=2)
+
+      Label(self.optionImage, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=2)
+      ex_sh_sel = StringVar(self.optionImage)
+      ex_sh_sel.set('Section 1_Brand Architecture')
+      option = OptionMenu(self.optionImage, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=4, column=2)
+
+      Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=5)
+      ex_sh_sel2 = StringVar(self.optionImage)
+      ex_sh_sel2.set('0.0')
+      option2 = OptionMenu(self.optionImage, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
+
+      Button(self.optionImage, text="Guardar en Excel", command="saveFile").grid(row=4, column=7)
+
+      self.optionImage.pack()
     
     #----------------------------------------------------------------------
     def footer(self):

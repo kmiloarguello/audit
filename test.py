@@ -303,26 +303,34 @@ class OtherFrame(Toplevel):
 
       Label(self.rutaImg, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=8)
 
-      self.list_sheet = Listbox(self.rutaImg)
+      self.list_sheet = Listbox(self.rutaImg,selectmode=SINGLE)
       self.list_sheet.grid(row=2, column=8)
       for item_sheet in self.sheets:
         self.list_sheet.insert(END, item_sheet)
 
-      now = self.list_sheet.curselection()
+      self.sheet_selected = self.list_sheet.get(ACTIVE)
+      
+      clear_searched = []
 
-      print now
-        # if now != self.current:
-        #     self.list_has_changed(now)
-        #     self.current = now
-        # self.after(250, self.poll)
+      if(self.sheet_selected == self.sheets[0]):
+        Label(self.rutaImg, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=10)
 
+        self.sheets_search = self.wb.sheetnames[3:4]
 
-      # Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=10)
-      # self.list_item = Listbox(self.rutaImg)
-      # self.list_item.grid(row=2, column=10)
-      # for item in self.sheets:
-      #   self.list_sheet.insert(END, item_sheet)
+        self.list_number = Listbox(self.rutaImg,selectmode=SINGLE)
+        self.list_number.grid(row=2, column=10)
 
+        for my_sheet in self.sheets_search:
+          my_ws = self.wb[my_sheet]
+          for my_row in my_ws.rows:
+            searched = self.withoutFilter(self.number,my_row[1])
+            if not 'Number' in searched:
+              clear_searched.extend([searched])
+              final_number_clear = list(set(clear_searched))
+
+              if len(final_number_clear) >= 5:
+                for item_number in final_number_clear:
+                  self.list_number.insert(END,item_number)
 
 
       # ex_sh_sel2 = StringVar(self.optionImage)
@@ -334,7 +342,13 @@ class OtherFrame(Toplevel):
       # self.optionImage.pack()
 
       self.rutaImg.pack(side=TOP, fill=X)
-    
+
+    def list_item_number(self, selection):
+      self.list_item = Listbox(self.rutaImg)
+      self.list_item.grid(row=2, column=10)
+      for item in selection:
+        self.list_item.insert(END, item)
+
     def optionsImages(self):
       # self.optionImage = Toplevel(self)
       # self.optionImage.title('K@PTA')

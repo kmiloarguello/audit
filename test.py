@@ -293,7 +293,8 @@ class OtherFrame(Toplevel):
       Label(self.rutaImg, text=self.file_image, font=("Helvetica", 8), foreground='#000').grid(row=2, column=2)
 
       Label(self.rutaImg, text='Nombre a guardar', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=4)
-      entry = Entry(self.rutaImg,textvariable="entry_txt")
+      self.image_path = StringVar()
+      entry = Entry(self.rutaImg,textvariable=self.image_path)
       entry.grid(row=2, column=4)
 
       Label(self.rutaImg, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=8)
@@ -301,14 +302,6 @@ class OtherFrame(Toplevel):
       ex_sh_sel.set(self.sheets[0])
       w = OptionMenu(self.rutaImg, ex_sh_sel, *self.sheets,command=self.sheet_selected)
       w.grid(row=2,column=8)
-
-      # ex_sh_sel2 = StringVar(self.optionImage)
-      # ex_sh_sel2.set('0.0')
-      # option2 = OptionMenu(self.optionImage, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
-
-      # Button(self.optionImage, text="Guardar en Excel", command="saveFile").grid(row=4, column=7)
-
-      # self.optionImage.pack()
 
       self.rutaImg.pack(side=TOP, fill=X)
 
@@ -369,38 +362,14 @@ class OtherFrame(Toplevel):
               ex_rq_sel.set(req_searched[0])
               req = OptionMenu(self.rutaImg, ex_rq_sel, *req_searched, command=self.saveImageToExcel)
               req.grid(row=2,column=12)
-
       return value
 
     def saveImageToExcel(self,value):
+      Button(self.rutaImg, text="Guardar en Excel", command="saveFile").grid(row=2, column=14)
+      print "path ", self.image_path.get()
       print "Sheet " , self.final_sheet_render
       print "Item ", self.final_item_render
       print "Req", value
-
-    def optionsImages(self):
-      # self.optionImage = Toplevel(self)
-      # self.optionImage.title('K@PTA')
-      # self.optionImage.wm_iconbitmap('kapta_mex.ico')
-      # self.optionImage.geometry('400x100')
-      self.optionImage = Frame(self)
-
-      Label(self.optionImage, text='Selecciona el archivo para guardar', font=("Helvetica", 10)).grid(row=1, column=2)
-
-      # Button(self.optionImage, text="Guardar en Excel", command=loadExceltoSave).grid(row=2, column=2)
-
-      Label(self.optionImage, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=2)
-      ex_sh_sel = StringVar(self.optionImage)
-      ex_sh_sel.set('Section 1_Brand Architecture')
-      option = OptionMenu(self.optionImage, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=4, column=2)
-
-      Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=5)
-      ex_sh_sel2 = StringVar(self.optionImage)
-      ex_sh_sel2.set('0.0')
-      option2 = OptionMenu(self.optionImage, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
-
-      Button(self.optionImage, text="Guardar en Excel", command="saveFile").grid(row=4, column=7)
-
-      self.optionImage.pack()
     
     #----------------------------------------------------------------------
     def footer(self):

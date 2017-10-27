@@ -20,12 +20,12 @@ class OtherFrame(Toplevel):
       """Constructor"""
       self.original_frame = original
       Toplevel.__init__(self)
-      self.wm_iconbitmap('kapta_mex.ico')
+      # self.wm_iconbitmap('kapta_mex.ico')
       
       #Center the window
 
-      myW = 800
-      myH = 400
+      myW = 1200
+      myH = 600
 
       myWs = root.winfo_screenwidth()
       myHs = root.winfo_screenheight()
@@ -203,8 +203,8 @@ class OtherFrame(Toplevel):
           
           if(row[23].value == "N" and final_zero == 0 and 'Audit' in final_audit ):
             self.myHoja.extend([sheet])
-            self.myN.extend([row[23]])
-            self.myZero.extend([final_zero])
+            self.myN.extend([str(row[23].value)])
+            self.myZero.extend([str(final_zero)])
             self.myAudit.extend([final_audit])
             self.myEssentials.extend([final_essential])
             self.myStandard.extend([final_standard])
@@ -243,7 +243,7 @@ class OtherFrame(Toplevel):
       self.table.addColumn('Evaluation (0/1)')
       self.table.addColumn('Result')
       self.table.addColumn('Audit Comments')
-      self.table.addColumn('Picture / Statement / Proof')
+      # self.table.addColumn('Picture / Statement / Proof')
 
       for i in range(len(self.myHoja)):
         self.table.model.data[i]['Hoja Excel'] = self.myHoja[i]
@@ -259,16 +259,16 @@ class OtherFrame(Toplevel):
         self.table.model.data[i]['Evaluation (0/1)'] = self.myN[i]
         self.table.model.data[i]['Result'] = self.myZero[i]
         self.table.model.data[i]['Audit Comments'] = self.myAComments[i]
-        self.table.model.data[i]['Picture / Statement / Proof'] = self.myPic[i]
+        # self.table.model.data[i]['Picture / Statement / Proof'] = self.myPic[i]
 
       self.table.redrawTable()
     
     #----------------------------------------------------------------------
     """
-    LOAD EXCEL Funcionality
+    LOAD IMAGE Funcionality
     
-    1. arraysInit() -> is the initialization of every array
-    2. loadExcel() -> Load the excel file
+    1. buttonImage() -> Shows the button to upload the image
+    2. loadImage() -> Load the image file
     3. withoutFilter() -> Return a list with cell without None values
     4. loadWorkbook() -> Load from the file, the sheets and each column. Make search functionality
     5. renderExcel() -> Puth the info of file inside of a canvas using tkintertables
@@ -282,7 +282,8 @@ class OtherFrame(Toplevel):
     
     def loadImage(self):
       self.file_image = askopenfilename( initialdir = "/KAPTA Camilo/python/img",title = "Subir imagen para guardar en excel", filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
-      self.contImage()
+      if self.file_image is not None:
+        self.contImage()
     
     def contImage(self):
       self.rutaImg = Frame(self.image_container)
@@ -301,18 +302,29 @@ class OtherFrame(Toplevel):
       # Button(self.optionImage, text="Subir en Excel", command="loadExceltoSave").grid(row=2, column=2)
 
       Label(self.rutaImg, text='Selecciona Hoja', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=8)
-      ex_sh_sel = StringVar(self.rutaImg)
 
-      ex_sh_sel.set(self.sheets[0])
+      self.list_sheet = Listbox(self.rutaImg)
+      self.list_sheet.grid(row=2, column=8)
+      for item_sheet in self.sheets:
+        self.list_sheet.insert(END, item_sheet)
 
-      # for i in range(len(self.sheets)):
-      #   print self.sheets[i]
-      option_sheet = OptionMenu(self.rutaImg, ex_sh_sel, tuple(self.sheets))
-      option_sheet.pack()
+      now = self.list_sheet.curselection()
 
-      # option = OptionMenu(self.rutaImg, ex_sh_sel, 'Section 2_OCS', 'Section 4_Customer Area', 'Section 5_IT', 'Section 6_Management','Section 7_Personnel  Training','Section 8_Customer Processes','Section 9_Marketing').grid(row=2, column=8)
+      print now
+        # if now != self.current:
+        #     self.list_has_changed(now)
+        #     self.current = now
+        # self.after(250, self.poll)
 
-      # Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=3, column=5)
+
+      # Label(self.optionImage, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=10)
+      # self.list_item = Listbox(self.rutaImg)
+      # self.list_item.grid(row=2, column=10)
+      # for item in self.sheets:
+      #   self.list_sheet.insert(END, item_sheet)
+
+
+
       # ex_sh_sel2 = StringVar(self.optionImage)
       # ex_sh_sel2.set('0.0')
       # option2 = OptionMenu(self.optionImage, ex_sh_sel2, '1.0', '2.0', '3.0', '4.0').grid(row=4, column=5)
@@ -359,7 +371,7 @@ class OtherFrame(Toplevel):
     def acercaDe(self):
       self.about = Toplevel(self)
       self.about.title('K@PTA')
-      self.about.wm_iconbitmap('kapta_mex.ico')
+      # self.about.wm_iconbitmap('kapta_mex.ico')
       self.about.geometry('200x100')
       Label(self.about, text='Derechos Reservados K@PTA \n Desarrollador Camilo Arguello \n Farrell, D 2016 DataExplore: An Application for General Data Analysis in Research and Education. Journal of Open Research Software, 4: e9, DOI: http://dx.doi.org/10.5334/jors.94', font=("Segoe UI", 9), justify=LEFT).pack()
     #----------------------------------------------------------------------
@@ -392,7 +404,7 @@ class MyApp(object):
         myY = (myHs/2) - (myH/2)
 
 
-        self.root.wm_iconbitmap('kapta_mex.ico')
+        # self.root.wm_iconbitmap('kapta_mex.ico')
         self.root.geometry('%dx%d+%d+%d' % (myW, myH, myX, myY))
         self.root.title("K@PTA Excel Auditorias")
         self.root.resizable(0,0)

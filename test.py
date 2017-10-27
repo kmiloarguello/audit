@@ -233,7 +233,7 @@ class OtherFrame(Toplevel):
       self.table.addColumn('Hoja Excel')
       self.table.addColumn('Standard')
       self.table.addColumn('Number')
-      self.table.addColumn('Requirement 2015')
+      self.table.addColumn('Requirement')
       self.table.addColumn('Comments')
       self.table.addColumn('Type of Check')
       self.table.addColumn('Essentials')
@@ -249,7 +249,7 @@ class OtherFrame(Toplevel):
         self.table.model.data[i]['Hoja Excel'] = self.myHoja[i]
         self.table.model.data[i]['Standard'] = self.myStandard[i]
         self.table.model.data[i]['Number'] = self.myNumber[i]
-        self.table.model.data[i]['Requirement 2015'] = self.myRequeriment[i]
+        self.table.model.data[i]['Requirement'] = self.myRequeriment[i]
         self.table.model.data[i]['Comments'] = self.myComment[i]
         self.table.model.data[i]['Type of Check'] = self.myAudit[i]
         self.table.model.data[i]['Essentials'] = self.myEssentials[i]
@@ -316,6 +316,9 @@ class OtherFrame(Toplevel):
     def sheet_selected(self,value):
       item_searched = []
 
+      self.final_sheet_render = value
+      
+
       if(value == self.sheets[0]):
         Label(self.rutaImg, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=10)
 
@@ -329,10 +332,38 @@ class OtherFrame(Toplevel):
                 item_searched.extend([my_row[1].value])
                 ex_it_sel = StringVar(self.rutaImg)
                 ex_it_sel.set(item_searched[0])
-                item = OptionMenu(self.rutaImg, ex_it_sel, *item_searched)
+                item = OptionMenu(self.rutaImg, ex_it_sel, *item_searched, command=self.item_selected)
                 item.grid(row=2,column=10)
 
       return value
+
+    def item_selected(self,value):
+      req_searched = []
+      Label(self.rutaImg, text='Seleccione Requerimiento', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=12)
+
+      self.final_item_render = value
+      
+
+      if float(value) == 1.1:
+        self.sheets_search = self.wb.sheetnames[3:4]
+
+        for my_sheet in self.sheets_search:
+          my_ws = self.wb[my_sheet]
+          for my_row in my_ws.rows:
+            if my_row[2].value is not None:
+              max_letter = my_row[2].value.encode('ascii', 'ignore')[:50]
+              req_searched.extend([max_letter])
+              ex_rq_sel = StringVar(self.rutaImg)
+              ex_rq_sel.set(req_searched[0])
+              req = OptionMenu(self.rutaImg, ex_rq_sel, *req_searched, command=self.saveImageToExcel)
+              req.grid(row=2,column=12)
+
+      return value
+
+    def saveImageToExcel(self,value):
+      print "Sheet " , self.final_sheet_render
+      print "Item ", self.final_item_render
+      print "Req", value
 
     def optionsImages(self):
       # self.optionImage = Toplevel(self)

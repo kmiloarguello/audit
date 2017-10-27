@@ -199,7 +199,6 @@ class OtherFrame(Toplevel):
           final_suggested = self.withoutFilter(self.suggested,row[21])
           final_auditcomments = self.withoutFilter(self.auditcomments,row[30])
           final_picture = self.withoutFilter(self.picture,row[30])
-
           
           if(row[23].value == "N" and final_zero == 0 and 'Audit' in final_audit ):
             self.myHoja.extend([sheet])
@@ -314,26 +313,42 @@ class OtherFrame(Toplevel):
       self.rutaImg.pack(side=TOP, fill=X)
 
     def sheet_selected(self,value):
+      '''
+      Here I catch the sheets. 
+      1. as I have the self.sheets array
+      2. using a for I looped it to find when the value passed is equal to i
+      3. I assign a and b knowing that the sheets start on number 3 sheet to number 12
+      That give me the info of search
+      4. Loop into sheet filtered
+      5. Catch info of that sheet and store into a my_ws
+      6. Loop it and find the row of the data of that sheet
+      If is None and Number skip.
+      7. Call an array and add the info of values
+      Assign it into a OptionMenu of Tkinter.
+
+      '''
       item_searched = []
 
       self.final_sheet_render = value
-      
 
-      if(value == self.sheets[0]):
-        Label(self.rutaImg, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=10)
+      Label(self.rutaImg, text='Seleccione Item', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=10)
 
-        self.sheets_search = self.wb.sheetnames[3:4]
+      for i in range(len(self.sheets)):
+        if value == self.sheets[i]: 
+          a = i + 3
+          b = a + 1
+          self.sheets_search = self.wb.sheetnames[a:b]
 
-        for my_sheet in self.sheets_search:
-          my_ws = self.wb[my_sheet]
-          for my_row in my_ws.rows:
-            if my_row[1].value is not None:
-              if not 'Number' in my_row[1].value:
-                item_searched.extend([my_row[1].value])
-                ex_it_sel = StringVar(self.rutaImg)
-                ex_it_sel.set(item_searched[0])
-                item = OptionMenu(self.rutaImg, ex_it_sel, *item_searched, command=self.item_selected)
-                item.grid(row=2,column=10)
+      for my_sheet in self.sheets_search:
+        my_ws = self.wb[my_sheet]
+        for my_row in my_ws.rows:
+          final_number_tkinter = self.withoutFilter(self.number,my_row[1])
+          if not 'Number' in final_number_tkinter:
+            item_searched.extend([final_number_tkinter])
+            ex_it_sel = StringVar(self.rutaImg)
+            ex_it_sel.set(item_searched[0])
+            item = OptionMenu(self.rutaImg, ex_it_sel, *item_searched, command=self.item_selected)
+            item.grid(row=2,column=10)
 
       return value
 
@@ -342,14 +357,11 @@ class OtherFrame(Toplevel):
       Label(self.rutaImg, text='Seleccione Requerimiento', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=12)
 
       self.final_item_render = value
-      
 
-      if float(value) == 1.1:
-        self.sheets_search = self.wb.sheetnames[3:4]
-
-        for my_sheet in self.sheets_search:
-          my_ws = self.wb[my_sheet]
-          for my_row in my_ws.rows:
+      for my_sheet in self.sheets_search:
+        my_ws = self.wb[my_sheet]
+        for my_row in my_ws.rows:
+          if(value == my_row[1].value):
             if my_row[2].value is not None:
               max_letter = my_row[2].value.encode('ascii', 'ignore')[:50]
               req_searched.extend([max_letter])

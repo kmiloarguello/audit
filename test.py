@@ -91,6 +91,8 @@ class OtherFrame(Toplevel):
 
       """
 
+      self.protocol('WM_DELETE_WINDOW', self.onClose)
+
       self.footer()
 
     #----------------------------------------------------------------------
@@ -194,7 +196,7 @@ class OtherFrame(Toplevel):
         if len(isAuditExcel) >= 12:
           self.sheets = self.wb.sheetnames[3:12]
         else:
-          print 'No Excel'
+          print ''
 
       for sheet in self.sheets:
         self.ws = self.wb[sheet]

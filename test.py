@@ -68,15 +68,6 @@ class OtherFrame(Toplevel):
       self.image_container.pack(fill=X, pady=5)
 
       """
-      Button of CLOSE
-      """
-
-      self.frame2 = Frame(self)
-      btn = Button(self.frame2, text="Close", command=self.onClose)
-      btn.pack()
-      self.frame2.pack()
-
-      """
       # Scrollbar funcionality
 
       self.scrollbar = Scrollbar(self)
@@ -386,19 +377,20 @@ class OtherFrame(Toplevel):
       return value
 
     def saveImageToExcel(self,value):
-      Label(self.rutaImg, text='Imagen guardada en excel', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=14)
-      # Button(self.rutaImg, text="Guardar", command="saveFile").grid(row=2, column=14)
+      Label(self.rutaImg, text='Imagen guardada en excel', font=("Helvetica", 10), foreground='#00FF00').grid(row=2, column=14)
 
       for my_sheet in self.sheets_search:
         my_ws = self.wb[my_sheet]
         for my_row in my_ws.rows:
           if self.item_value == my_row[1].value:
             if my_row[2].value is not None:
-              print "En hoja ", my_sheet, " en celda ", my_row[len(my_row)-1], "valor " , self.image_path.get()
               valor_a_guardar = self.image_path.get().encode('utf-8')
               f_sheet = self.wb.get_sheet_by_name(my_sheet)
-              f_sheet['AE7'] = valor_a_guardar
-              self.wb.save('text2.xlsx')
+              f_celda = my_row[len(my_row)-1].coordinate
+
+              f_sheet[f_celda] = valor_a_guardar
+
+              self.wb.save(self.filename)
     
     #----------------------------------------------------------------------
     def footer(self):

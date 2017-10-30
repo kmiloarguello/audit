@@ -1,3 +1,10 @@
+"""
+FOR BUILD TYPE:
+python CreateExe.py build
+
+** Copy the image to the same folder where is the .EXE
+"""
+
 from cx_Freeze import setup,Executable
 
 includes = []

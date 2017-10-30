@@ -33,7 +33,7 @@ class OtherFrame(Toplevel):
       """Constructor"""
       self.original_frame = original
       Toplevel.__init__(self)
-      # self.wm_iconbitmap('kapta_mex.ico')
+      self.wm_iconbitmap('kapta_mex.ico')
       
       #Center the window
 
@@ -165,7 +165,7 @@ class OtherFrame(Toplevel):
     
     def loadExcel(self):
       try:
-        self.filename = askopenfilename( initialdir = "/KAPTA Camilo/python/xlsx",title = "Subir archivo de excel", filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))  
+        self.filename = askopenfilename( title = "Subir archivo de excel", filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))  
         self.arraysInit()
         self.loadWorkbook()
       except:
@@ -305,7 +305,7 @@ class OtherFrame(Toplevel):
       self.load_cont_img.pack(side=TOP,fill=X)
     
     def loadImage(self):
-      self.file_image = askopenfilename( initialdir = "/KAPTA Camilo/python/img",title = "Subir imagen para guardar en excel", filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
+      self.file_image = askopenfilename(title = "Subir imagen para guardar en excel", filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
       if self.file_image is not None:
         self.contImage()
     
@@ -430,7 +430,7 @@ class OtherFrame(Toplevel):
     def acercaDe(self):
       self.about = Toplevel(self)
       self.about.title('K@PTA')
-      # self.about.wm_iconbitmap('kapta_mex.ico')
+      self.about.wm_iconbitmap('kapta_mex.ico')
       self.about.geometry('200x100')
       Label(self.about, text='Derechos Reservados K@PTA \n Desarrollador Camilo Arguello \n Farrell, D 2016 DataExplore: An Application for General Data Analysis in Research and Education. Journal of Open Research Software, 4: e9, DOI: http://dx.doi.org/10.5334/jors.94', font=("Segoe UI", 9), justify=LEFT).pack()
     
@@ -464,7 +464,7 @@ class MyApp(object):
         myY = (myHs/2) - (myH/2)
 
 
-        # self.root.wm_iconbitmap('kapta_mex.ico')
+        self.root.wm_iconbitmap('kapta_mex.ico')
         self.root.geometry('%dx%d+%d+%d' % (myW, myH, myX, myY))
         self.root.title("K@PTA Excel Auditorias")
         self.root.resizable(0,0)
@@ -472,7 +472,7 @@ class MyApp(object):
 
         self.label = Label(self.frame, text='Para iniciar por favor carga el archivo de auditorias')
         self.button = Button(self.frame, justify=LEFT,command=self.openFrame)
-        self.photo = ImageTk.PhotoImage(file='img/subir_excel.png')
+        self.photo = ImageTk.PhotoImage(file='subir_excel.png')
         self.button.config(image=self.photo, width='300',height='50')
         self.label.pack(fill=X)
         self.button.pack()

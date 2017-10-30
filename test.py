@@ -158,9 +158,16 @@ class OtherFrame(Toplevel):
       self.picture = []        
     
     def loadExcel(self):
-      self.filename = askopenfilename( initialdir = "/KAPTA Camilo/python/xlsx",title = "Subir archivo de excel", filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))  
-      self.arraysInit()
-      self.loadWorkbook()
+      try:
+        self.filename = askopenfilename( initialdir = "/KAPTA Camilo/python/xlsx",title = "Subir archivo de excel", filetypes = (("Excel Auditorias", ".xlsx"), ("Todos los archivos", "*.*")))  
+        self.arraysInit()
+        self.loadWorkbook()
+      except:
+        tkMessageBox.showwarning(
+            "Error al subir archivo",
+            "Solo puedes cargar archivos de auditorias.\n(%s)" % self.filename
+        )
+        return (root.quit())
 
     def withoutFilter(self,item,cell):
       """
@@ -181,7 +188,13 @@ class OtherFrame(Toplevel):
        First Load the excel file
       """
       self.wb = load_workbook(filename=self.filename,data_only=True)
-      self.sheets = self.wb.sheetnames[3:12]
+      isAuditExcel = []
+      for s in self.wb:
+        isAuditExcel.extend([s])
+        if len(isAuditExcel) >= 12:
+          self.sheets = self.wb.sheetnames[3:12]
+        else:
+          print 'No Excel'
 
       for sheet in self.sheets:
         self.ws = self.wb[sheet]
@@ -371,14 +384,19 @@ class OtherFrame(Toplevel):
       return value
 
     def saveImageToExcel(self,value):
-      Button(self.rutaImg, text="Guardar en Excel", command="saveFile").grid(row=2, column=14)
+      Label(self.rutaImg, text='Imagen guardada en excel', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=14)
+      # Button(self.rutaImg, text="Guardar", command="saveFile").grid(row=2, column=14)
 
       for my_sheet in self.sheets_search:
         my_ws = self.wb[my_sheet]
         for my_row in my_ws.rows:
           if self.item_value == my_row[1].value:
             if my_row[2].value is not None:
-              print "En hoja ", my_sheet, " en celda ", my_row[len(my_row)-1], "valor " , self.image_path.get()      
+              print "En hoja ", my_sheet, " en celda ", my_row[len(my_row)-1], "valor " , self.image_path.get()
+              valor_a_guardar = self.image_path.get().encode('utf-8')
+              f_sheet = self.wb.get_sheet_by_name(my_sheet)
+              f_sheet['AE7'] = valor_a_guardar
+              self.wb.save('text2.xlsx')
     
     #----------------------------------------------------------------------
     def footer(self):

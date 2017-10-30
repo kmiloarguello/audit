@@ -1,3 +1,17 @@
+"""
+Proyecto desarrollado por KAPTA SAS Colombia.
+Las librerias usadas son de uso general. 
+El proposito de este codigo y/o proyecto es para uso interno de la empresa.
+
+Desarrollado por CAMILO ARGUELLO https://camiloarguello.xyz
+
+Derechos reservados para KAPTA SAS. http://kapta.biz
+Colombia
+2017
+
+"""
+
+
 from Tkinter import *
 from PIL import Image, ImageTk
 from tkFileDialog import askopenfilename, asksaveasfilename
@@ -279,9 +293,10 @@ class OtherFrame(Toplevel):
     
     1. buttonImage() -> Shows the button to upload the image
     2. loadImage() -> Load the image file
-    3. withoutFilter() -> Return a list with cell without None values
-    4. loadWorkbook() -> Load from the file, the sheets and each column. Make search functionality
-    5. renderExcel() -> Puth the info of file inside of a canvas using tkintertables
+    3. contImage() -> Elements to Entry values and select Sheet when it selected call the next method
+    4. Sheet_select() -> Select the Item and call the next function
+    5. item_selected() -> Select the requirement of that year. and call next function
+    6. saveImageToExcel() -> When the item is selected it save into a excel file.
 
     """
     def buttonImage(self):
@@ -377,7 +392,18 @@ class OtherFrame(Toplevel):
       return value
 
     def saveImageToExcel(self,value):
-      Label(self.rutaImg, text='Imagen guardada en excel', font=("Helvetica", 10), foreground='#00FF00').grid(row=2, column=14)
+      """
+      Loop inside the excel filtered to store the data.
+      self.item.value is the value of the item selected
+      valor_a_guardar is the value of Entry text box. It passed as STR using encode utf-8
+
+      Store Data
+      1. Get the sheet by name
+      2. Get the cell value and coodinates
+      3. Save the new excel or replace the last version
+
+      Call the label to show to the user that the image was stored on excel
+      """
 
       for my_sheet in self.sheets_search:
         my_ws = self.wb[my_sheet]
@@ -391,6 +417,8 @@ class OtherFrame(Toplevel):
               f_sheet[f_celda] = valor_a_guardar
 
               self.wb.save(self.filename)
+      
+      Label(self.rutaImg, text='Imagen guardada en excel', font=("Helvetica", 10), foreground='#00FF00').grid(row=2, column=14)
     
     #----------------------------------------------------------------------
     def footer(self):

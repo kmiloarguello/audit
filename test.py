@@ -355,7 +355,7 @@ class OtherFrame(Toplevel):
       req_searched = []
       Label(self.rutaImg, text='Seleccione Requerimiento', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=12)
 
-      self.final_item_render = value
+      self.item_value = value
 
       for my_sheet in self.sheets_search:
         my_ws = self.wb[my_sheet]
@@ -376,10 +376,9 @@ class OtherFrame(Toplevel):
       for my_sheet in self.sheets_search:
         my_ws = self.wb[my_sheet]
         for my_row in my_ws.rows:
-          print my_row
-          if len(my_row) == 1:
-            print "Hoja " , my_sheet,"Valor a Guardar ", self.image_path.get(), " en ", my_row[1]
-            # print "Celda ", 
+          if self.item_value == my_row[1].value:
+            if my_row[2].value is not None:
+              print "En hoja ", my_sheet, " en celda ", my_row[len(my_row)-1], "valor " , self.image_path.get()      
     
     #----------------------------------------------------------------------
     def footer(self):
@@ -395,6 +394,7 @@ class OtherFrame(Toplevel):
       # self.about.wm_iconbitmap('kapta_mex.ico')
       self.about.geometry('200x100')
       Label(self.about, text='Derechos Reservados K@PTA \n Desarrollador Camilo Arguello \n Farrell, D 2016 DataExplore: An Application for General Data Analysis in Research and Education. Journal of Open Research Software, 4: e9, DOI: http://dx.doi.org/10.5334/jors.94', font=("Segoe UI", 9), justify=LEFT).pack()
+    
     #----------------------------------------------------------------------
     def onClose(self):
       

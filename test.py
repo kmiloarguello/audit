@@ -199,16 +199,11 @@ class OtherFrame(Toplevel):
           final_suggested = self.withoutFilter(self.suggested,row[21])
 
           if len(row) == 31:
-            print row[28].value, row[30].value
             final_auditcomments = self.withoutFilter(self.auditcomments,row[28])
             final_picture = self.withoutFilter(self.picture,row[30])
           else:
-            print row[29].value, row[31].value
             final_auditcomments = self.withoutFilter(self.auditcomments,row[28])
             final_picture = self.withoutFilter(self.picture,row[30])
-
-          final_auditcomments = self.withoutFilter(self.auditcomments,row[30])
-          final_picture = self.withoutFilter(self.picture,row[30])
           
           if(row[23].value == "N" and final_zero == 0 and 'Audit' in final_audit ):
             self.myHoja.extend([sheet])
@@ -367,7 +362,7 @@ class OtherFrame(Toplevel):
         for my_row in my_ws.rows:
           if(value == my_row[1].value):
             if my_row[2].value is not None:
-              max_letter = my_row[2].value.encode('ascii', 'ignore')[:100]
+              max_letter = my_row[2].value.encode('ascii', 'ignore')[:10]
               req_searched.extend([max_letter])
               ex_rq_sel = StringVar(self.rutaImg)
               ex_rq_sel.set(req_searched[0])
@@ -377,11 +372,14 @@ class OtherFrame(Toplevel):
 
     def saveImageToExcel(self,value):
       Button(self.rutaImg, text="Guardar en Excel", command="saveFile").grid(row=2, column=14)
-      print "Valor a Guardar ", self.image_path.get()
-      print "Hoja " , self.final_sheet_render
-      print "Columna ", self.final_item_render
-      print "Fila ", value
-      print "Celda "
+
+      for my_sheet in self.sheets_search:
+        my_ws = self.wb[my_sheet]
+        for my_row in my_ws.rows:
+          print my_row
+          if len(my_row) == 1:
+            print "Hoja " , my_sheet,"Valor a Guardar ", self.image_path.get(), " en ", my_row[1]
+            # print "Celda ", 
     
     #----------------------------------------------------------------------
     def footer(self):

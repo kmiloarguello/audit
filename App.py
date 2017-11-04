@@ -361,15 +361,15 @@ class OtherFrame(Toplevel):
       for my_sheet in self.sheets_search:
         my_ws = self.wb[my_sheet]
         for my_row in my_ws.rows:
-          if my_row[1].value is not None:
-            final_number_tkinter = my_row[1].value
+          if my_row[2].value is not None:
+            final_number_tkinter = self.withoutFilter(self.numberCategory,my_row[1])
             if not 'Number' in final_number_tkinter:
               item_searched.extend([final_number_tkinter])
               ex_it_sel = StringVar(self.rutaImg)
               ex_it_sel.set(item_searched[0])
               item = OptionMenu(self.rutaImg, ex_it_sel, *item_searched, command=self.item_selected)
               item.grid(row=2,column=10)
-
+              
       return value
 
     def item_selected(self,value):

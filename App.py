@@ -414,6 +414,7 @@ class OtherFrame(Toplevel):
               f_sheet = self.wb.get_sheet_by_name(my_sheet)
               f_celda = my_row[len(my_row)-1].coordinate
 
+
               if valor_a_guardar == "":
                 get_only_file = os.path.split(self.file_image)[1]
                 valor_a_guardar = get_only_file

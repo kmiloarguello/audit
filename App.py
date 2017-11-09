@@ -1,4 +1,5 @@
 """
+APP Version 1.4.0
 Proyecto desarrollado por KAPTA SAS Colombia.
 Las librerias usadas son de uso general. 
 El proposito de este codigo y/o proyecto es para uso interno de la empresa.
@@ -13,13 +14,14 @@ Colombia
 
 from Tkinter import *
 from PIL import Image, ImageTk
-from tkFileDialog import askopenfilename, asksaveasfilename
+from tkFileDialog import askopenfilename, asksaveasfilename, askdirectory
 import tkMessageBox
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.writer.write_only import WriteOnlyCell
 import types
 import os
+import glob
 # from pandastable import Table, TableModel
 from tkintertable.Tables import TableCanvas
 from tkintertable.TableModels import TableModel
@@ -73,13 +75,23 @@ class OtherFrame(Toplevel):
       Frame to upload the image and manage it.
       """
 
-      self.line = Frame(self, relief=RAISED, borderwidth=1)
-      self.line.pack(fill=X,)
+    
+      self.line = Frame(self, relief=RAISED, borderwidth=1 , bg="white")
+      self.line.pack(fill=X)
 
       self.image_container = Frame(self)
       Label(self.image_container, text='Imagenes para guardar en excel', font=("Helvetica", 15), foreground='#000').pack(pady=20)
       self.buttonImage()
       self.image_container.pack(fill=X, pady=5)
+
+      self.line = Frame(self, relief=RAISED, borderwidth=1 , bg="white")
+      self.line.pack(fill=X)
+
+      self.image_container_ch = Frame(self)
+      Label(self.image_container_ch, text='Imagenes para renombrar', font=("Helvetica", 15), foreground='#000').pack(pady=20)
+      self.buttonImageChange()
+      self.image_container_ch.pack(fill=X, pady=5)
+
 
       """
       # Scrollbar funcionality
@@ -242,6 +254,7 @@ class OtherFrame(Toplevel):
             self.myPic.extend([final_picture])
         
     def renderExcel(self):
+      
       self.model = TableModel()
       self.table = TableCanvas(self.frame,model=self.model,editable=False,rowheaderwidth=50)
       self.table.createTableFrame()
@@ -286,7 +299,10 @@ class OtherFrame(Toplevel):
         # self.table.model.data[i]['Picture / Statement / Proof'] = self.myPic[i]
 
       self.table.redrawTable()
-    
+
+
+
+
     #----------------------------------------------------------------------
     """
     LOAD IMAGE Funcionality
@@ -304,7 +320,7 @@ class OtherFrame(Toplevel):
       self.button_load = Button(self.load_cont_img, justify=LEFT,command=self.loadImage, text="Subir imagen")
       self.button_load.pack()
       self.load_cont_img.pack(side=TOP,fill=X)
-    
+
     def loadImage(self):
       self.file_image = askopenfilename(title = "Subir imagen para guardar en excel", filetypes = (("Imagen de resultado", ".jpg"), ("Todos los archivos", "*.*")))
       if self.file_image is not None:
@@ -426,6 +442,51 @@ class OtherFrame(Toplevel):
       Label(self.rutaImg, text='Imagen guardada en excel', font=("Helvetica", 10), foreground='#00FF00').grid(row=2, column=14)
     
     #----------------------------------------------------------------------
+    """
+    CHANGE IMAGE NAME
+    
+    """
+    def buttonImageChange(self):
+      self.load_cont_img = Frame(self.image_container_ch)
+      self.button_load = Button(self.load_cont_img, justify=LEFT,command=self.loadImageForChange, text="Cambiar nombre imagenes")
+      self.button_load.pack()
+      self.load_cont_img.pack(side=TOP,fill=X)  
+    
+    def loadImageForChange(self):
+      self.folder_input_change = askdirectory()
+      self.changeImages()
+    
+    def changeImages(self):
+      self.rutaImgCh = Frame(self.image_container_ch)
+      self.imagesInput = glob.glob(self.folder_input_change + '/IMG*.jpg')
+
+      if len(self.imagesInput) > 0:
+        Label(self.rutaImgCh, text="  ").grid(row=1, column=0)
+        Label(self.rutaImgCh, text="  ").grid(row=2, column=0)
+        Label(self.rutaImgCh, text='Nombre a guardar', font=("Helvetica", 10), foreground='#E38929').grid(row=1, column=4)
+        self.image_path_ch = StringVar()
+        entry = Entry(self.rutaImgCh,textvariable=self.image_path_ch)
+        entry.grid(row=2, column=4)
+
+        self.button_load = Button(self.rutaImgCh, justify=LEFT,command=self.saveChangeImage, text="Cambiar nombre imagenes")
+        self.button_load.grid(row=2, column=6)
+      else:
+        tkMessageBox.showwarning(
+            "Lo siento",
+            "No encontramos imagenes que empiecen con IMG_*.JPG ."
+        )
+
+      self.rutaImgCh.pack(side=TOP, fill=X)
+    
+    def saveChangeImage(self):
+
+      change_img = self.image_path_ch.get().encode('utf-8')
+
+      for file in self.imagesInput:
+        os.rename(file, self.folder_input_change + '/' + change_img + '_{}'.format(file.split('_')[1]))
+        Label(self.rutaImgCh, text='Imagen renombradas exitosamente', font=("Helvetica", 10), foreground='#00FF00').grid(row=2, column=8)
+
+    #----------------------------------------------------------------------
     def footer(self):
       self.toolbar = Frame(self,bg='white')
       self.myLabel = Label(self.toolbar, text='Derechos reservados K@PTA', bg='white')
@@ -448,7 +509,6 @@ class OtherFrame(Toplevel):
       self.quit()
       root.destroy()
       root.quit()
-      exit()
       # self.original_frame.show()
  
 ########################################################################
@@ -508,4 +568,3 @@ if __name__ == "__main__":
   root = Tk()
   app = MyApp(root)
   root.mainloop()
-  exit()

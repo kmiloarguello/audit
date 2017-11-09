@@ -1,6 +1,7 @@
-import exifread
+import os
+import glob
 
-f = open('IMG_1174.JPG', 'rb')
-tags = exifread.process_file(f)
+files = glob.glob('r/IMG*.jpg')
 
-print tags
+for file in files:
+  os.rename(file, 'r/KAPTA_IMAGENES_{}'.format(file.split('_')[1]))
